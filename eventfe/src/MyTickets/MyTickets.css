@@ -1,26 +1,58 @@
+/* General Page Styling */
 .my-tickets-page {
-    text-align: center;
-    margin: 20px;
-  }
-  
-  .tickets-list {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-  }
-  
-  .ticket-card {
-    width: 200px;
-    padding: 15px;
-    margin: 10px;
-    border: 1px solid #ccc;
-  }
-  
-  .ticket-card h3 {
-    font-size: 18px;
-  }
-  
-  .qr-code {
-    margin-top: 10px;
-  }
-  
+  text-align: center;
+  margin: 20px;
+}
+
+/* Header Styling */
+.my-tickets-header {
+  margin-top: 60px;
+  background-color: #333;
+  color: white;
+  padding: 10px 20px;
+}
+
+.my-tickets-header h1 {
+  font-size: 24px;
+}
+
+/* Background Image Styling */
+.my-tickets-background img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  margin-top: 20px;
+}
+
+/* Ticket Cards Layout */
+.tickets-list {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.ticket-card {
+  width: 200px;
+  padding: 15px;
+  margin: 10px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+}
+
+.ticket-card h3 {
+  font-size: 18px;
+}
+
+.ticket-card p {
+  font-size: 16px;
+}
+
+.qr-code {
+  margin-top: 10px;
+}
+
+.ticket-card img {
+  max-width: 100%;
+  margin-top: 10px;
+}

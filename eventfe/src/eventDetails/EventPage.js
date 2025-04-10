@@ -6,7 +6,7 @@ import { QRCode } from 'qrcode.react';  // Correct named import
 
 
 
-const EventPage = () => {
+const EventPage = ({ setTickets }) => {
   // Initialize state for ticket quantities
   const { id } = useParams(); // Get the event ID from the URL parameter
   const [vipTickets, setVipTickets] = useState(0);
@@ -49,11 +49,14 @@ const EventPage = () => {
   const handleRegister = () => {
     const newTicket = {
         eventName: currentEvent.name,
+        time: currentEvent.time,  // Add time here
+        venue: currentEvent.venue,
         vipTickets,
         generalTickets,
         qrCode: `${currentEvent.name}-${vipTickets}-${generalTickets}`,  // This can be changed as per your need
       };
-    setMyTickets([...myTickets, newTicket]);
+    // setMyTickets([...myTickets, newTicket]);
+    setTickets((prevTickets) => [...prevTickets, newTicket]);
     console.log("New Ticket Registered:", newTicket);
     console.log("VIP Tickets:", vipTickets);
     console.log("General Tickets:", generalTickets);
