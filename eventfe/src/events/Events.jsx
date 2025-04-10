@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";  // Import Link to handle navigation
 import "./events.css";
 
 const eventsData = [
@@ -31,6 +32,8 @@ const Events = () => {
             />
             <h2 className="event-title">{event.title}</h2>
             <p className="event-description">{event.description}</p>
+            {/* Link to navigate to EventPage with the event ID */}
+            <Link to={`/event/${event.id}`} className="book-button">Book</Link>
           </div>
         ))}
       </div>
