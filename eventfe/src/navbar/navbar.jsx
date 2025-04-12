@@ -3,14 +3,18 @@ import { Link } from "react-router-dom"
 import "./navbar.css"
 import { FormContextLogin } from "../login/FormContextLogin"
 
+
 const Navbar = () => {
     const { formDataLogin } = useContext(FormContextLogin);
 
     return (
-        <div class = "navbar">
+        <div className = "navbar">
             <header>
                 <nav className='flexSB'>
                     <ul class="flexSB">
+                         <li className="logo">
+                         <img src="path-to-your-logo.png" alt="EventEase Logo" className="navbar-logo" />
+                         </li>
                         <li>
                             <Link to='/home'>Home</Link>
                         </li>
@@ -18,7 +22,7 @@ const Navbar = () => {
                             <Link to='/allEvents'>{formDataLogin.username}</Link>
                         </li>
                         <li>
-                            <Link to='myTickets'>My Tickets</Link>
+                            <Link to='/myTickets'>My Tickets</Link>
                         </li>
                     </ul>
                 </nav>
