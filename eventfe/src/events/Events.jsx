@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";  // Import Link to handle navigation
+import { Link } from "react-router-dom"; // Import Link to handle navigation
 import "./events.css";
 
 const eventsData = [
@@ -21,7 +21,7 @@ const eventsData = [
 const Events = () => {
   return (
     <div className="events-container">
-      <h1>Upcoming Events</h1>
+      <h1>All Events</h1>
       <div className="events-grid">
         {eventsData.map((event) => (
           <div key={event.id} className="event-card">
@@ -33,7 +33,9 @@ const Events = () => {
             <h2 className="event-title">{event.title}</h2>
             <p className="event-description">{event.description}</p>
             {/* Link to navigate to EventPage with the event ID */}
-            <Link to={`/event/${event.id}`} className="book-button">Book</Link>
+            <Link to={`/event/${event.id}`} className="book-button">
+              Book
+            </Link>
           </div>
         ))}
       </div>
