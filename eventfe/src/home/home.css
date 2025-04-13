@@ -1,0 +1,31 @@
+.home-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4rem;
+  height: calc(100vh - 80px);
+  box-sizing: border-box;
+}
+
+.mission-box {
+  width: 45%;
+  padding: 2rem;
+  border: 2px solid black;
+  border-radius: 16px;
+  background-color: #fefefe;
+  font-family: Arial, sans-serif;
+}
+
+.image-box {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.background-image {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  object-fit: cover;
+}

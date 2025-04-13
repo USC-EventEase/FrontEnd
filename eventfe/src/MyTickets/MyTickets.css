@@ -1,0 +1,61 @@
+/* General Page Styling */
+.my-tickets-page {
+  text-align: center;
+  padding-bottom: 50px;
+  padding-top: 0px;
+}
+
+/* Header Styling */
+.my-tickets-header {
+  background-color: #333;
+  color: white;
+  padding: 10px 20px;
+}
+
+.my-tickets-header h1 {
+  font-size: 24px;
+}
+
+/* Background Image Styling */
+.my-tickets-background img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  margin-top: 20px;
+}
+
+/* Ticket Cards Layout */
+.tickets-list {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.ticket-card {
+  width: 200px;
+  padding: 15px;
+  margin: 10px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+}
+
+.ticket-card h3 {
+  font-size: 18px;
+}
+
+.ticket-card p {
+  font-size: 16px;
+}
+
+.qr-code {
+  margin-top: 10px;
+}
+
+.ticket-card img {
+  max-width: 100%;
+  margin-top: 10px;
+}
+
+
+  
