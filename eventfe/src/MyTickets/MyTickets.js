@@ -5,6 +5,7 @@ import { QRCodeCanvas } from 'qrcode.react';  // Correct named import
 
 
 
+
 const MyTickets = ({ tickets }) => {
   return (
     <div className="my-tickets-page">

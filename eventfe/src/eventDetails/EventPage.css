@@ -4,18 +4,18 @@
 .event-page {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 0;
     width: 100%;
     box-sizing: border-box; 
     min-height: 100vh;  /* Ensures the page takes the full height of the viewport */
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* Ensures footer is at the bottom */
+    padding-bottom: 50px;
+    padding-top: 0px;
   }
   
   /* Event Header */
   .event-header {
-    margin-top: 60px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -91,6 +91,19 @@
   
   .register-button button:hover {
     background-color: #178f82;
+  }
+  
+  .popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(29, 244, 58, 0.923);
+    color: white;
+    padding: 20px;
+    border-radius: 5px;
+    font-size: 18px;
+    z-index: 2000;
   }
   
 
