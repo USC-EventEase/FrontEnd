@@ -9,6 +9,7 @@ import { FormProviderLogin } from './login/FormContextLogin';
 import Events from './events/Events.jsx'; // Adjust the path as per your project structure
 import EventPage from './eventDetails/EventPage.js'; // Import the EventPage component
 import MyTickets from './MyTickets/MyTickets.js';
+import Footer from './footer/footer.js';
 import Home from "./home/Home";
 
 function App() {
@@ -21,7 +22,7 @@ function App() {
                   <Route path='/' element={<Login />} />
                   <Route path='/signup' element={<Signup />} />
                   <Route path='/home' element={<><Navbar /><Home /> <Footer/></>} />
-                  <Route path='/events' element={<><Navbar></><Events></><Footer/></>}/>
+                  <Route path='/events' element={<><Navbar/><Events/><Footer/></>}/>
                   <Route path='/event/:id' element={<><Navbar /><EventPage setTickets={setTickets} /><Footer/></>} />
                   <Route path='/myTickets' element={<><Navbar /><MyTickets tickets={tickets} /><Footer/></>} /> 
 
