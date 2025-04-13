@@ -6,6 +6,9 @@ import { QRCode } from 'qrcode.react';  // Correct named import
 
 
 
+
+
+
 const EventPage = ({ setTickets }) => {
   // Initialize state for ticket quantities
   const { id } = useParams(); // Get the event ID from the URL parameter
@@ -130,6 +133,13 @@ const EventPage = ({ setTickets }) => {
       {/* Footer */}
       <footer className="footer">
         <p>Footer Content</p>
+        <df-messenger
+        intent="WELCOME"
+        chat-title="TickeTron"
+        agent-id="9c202571-f2ca-42ed-892e-c5a9044005db"
+        language-code="en"
+      ></df-messenger>
+
       </footer>
     </div>
   );
