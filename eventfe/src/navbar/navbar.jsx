@@ -18,16 +18,6 @@ const Navbar = () => {
       <header>
         <nav className="flexSB">
           <ul className="flexSB">
-
-            {/* EventEase Logo */}
-            <li className="logo">
-              <img
-                src="path-to-your-logo.png"
-                alt="EventEase Logo"
-                className="navbar-logo"
-              />
-            </li>
-
             {/* Navbar Links in the middle */}
             <li>
               <Link to="/home">Home</Link>
