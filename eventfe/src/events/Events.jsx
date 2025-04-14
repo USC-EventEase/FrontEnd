@@ -2,6 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom"; // Import Link to handle navigation
 import "./events.css";
 
+
+
 const eventsData = [
   {
     id: 1,
