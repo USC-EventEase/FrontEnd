@@ -1,7 +1,9 @@
-import React, { createContext, useContext, useState } from "react"
+import React, { createContext, useContext, useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import './login.css'
 import { FormContextLogin } from "./FormContextLogin";
+import { login } from "../api/auth";
+import Cookies from 'js-cookie';
 
 const preventRefresh = (e) => {
     e.preventDefault();
@@ -10,7 +12,18 @@ const preventRefresh = (e) => {
 
 const Login = () => {
     const { formDataLogin, setFormDataLogin} = useContext(FormContextLogin);
+	const [error, setError] = useState(null);
     const navigate = useNavigate();
+
+	const [showError, setShowError] = useState(false);
+	const [errorText, setErrorText] = useState("");
+
+	useEffect(() => {
+		if (showError) {
+		  const timer = setTimeout(() => setShowError(false), 3000);
+		  return () => clearTimeout(timer);
+		}
+	  }, [showError]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -20,22 +33,61 @@ const Login = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        navigate('/home');
+		setError(null);
+
+		try {
+			const response = await login(formDataLogin.email, formDataLogin.password);
+
+			if(response.ok) {
+				const data = response.data;
+				const { token, userId, type} = data;
+				
+				Cookies.set('token', token);
+				Cookies.set('userId', userId);
+				Cookies.set('type', type);
+
+				if(type === 'user') {
+					navigate('/home');
+				}
+
+				else {
+					
+				}
+			}
+
+			else {
+				const errorMessage = response.data.message;
+				setErrorText(errorMessage);
+				setShowError(true);
+
+				// console.log(data.message);
+			}
+			
+		} catch (err) {
+			console.error("Login Error: ", err.message);
+			setError(err.message);
+		}
+        
     };
 
     return (
         <div className="wrapper signIn">
-			{/* <div className="illustration">
-				<img src="https://source.unsplash.com/random" alt="illustration" />
-			</div> */}
+
 			<div className="form">
 				<div className="heading">LOGIN</div>
+
+				{showError && (
+					<p style={{ color: "red", marginBottom: "1rem", fontWeight: "bold" }}>
+						{errorText}
+					</p>
+				)}
+
 				<form>
 					<div>
-						<label htmlFor="username">Username</label>
-						<input type="text" id="name" name="username" value={formDataLogin.username} placeholder="Enter your username" onChange={handleChange} />
+						<label htmlFor="username">Email</label>
+						<input type="text" id="name" name="email" value={formDataLogin.email} placeholder="Enter your email" onChange={handleChange} />
 					</div>
 					<div>
 						<label htmlFor="password">Password</label>
@@ -46,7 +98,7 @@ const Login = () => {
 					</button>
 				</form>
 				<p>
-					Don't have an account ? <Link to="/signup"> Sign In </Link>
+					Don't have an account ? <Link to="/signup"> Sign Up </Link>
 				</p>
 			</div>
 		</div>

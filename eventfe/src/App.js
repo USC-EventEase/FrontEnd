@@ -6,6 +6,7 @@ import Navbar from './navbar/navbar';
 import Login from './login/Login';
 import Signup from './login/Signup';
 import { FormProviderLogin } from './login/FormContextLogin';
+import { FormProviderSignup } from './login/FormContextSignup.jsx';
 import Events from './events/Events.jsx'; // Adjust the path as per your project structure
 import EventPage from './eventDetails/EventPage.js'; // Import the EventPage component
 import MyTickets from './MyTickets/MyTickets.js';
@@ -17,7 +18,8 @@ function App() {
   return (
     <>
     <FormProviderLogin>
-      <Router>
+      <FormProviderSignup>
+        <Router>
               <Routes>
                   <Route path='/' element={<Login />} />
                   <Route path='/signup' element={<Signup />} />
@@ -26,8 +28,9 @@ function App() {
                   <Route path='/event/:id' element={<><Navbar /><EventPage setTickets={setTickets} /><Footer/></>} />
                   <Route path='/myTickets' element={<><Navbar /><MyTickets tickets={tickets} /><Footer/></>} /> 
 
-              </Routes>
-      </Router>
+                </Routes>
+        </Router>
+      </FormProviderSignup>
     </FormProviderLogin>
     </>
   );
