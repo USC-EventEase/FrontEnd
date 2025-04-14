@@ -22,7 +22,7 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        navigate('/home');
+        navigate('/admin_add');
     };
 
     return (

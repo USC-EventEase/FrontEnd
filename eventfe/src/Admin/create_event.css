@@ -1,0 +1,127 @@
+/* General Styling */
+.create-event {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 50px;
+    padding-top: 50px;
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: space-between; 
+  }
+  
+  /* Form Section */
+  .form-section {
+    width: 70%;
+    max-width: 900px;
+    margin-top: 30px;
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form-section h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  /* Form Container - Split into two sections */
+  .form-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  
+  /* Left Section */
+  .form-left, .form-right {
+    width: 48%; /* Taking half of the form container */
+  }
+  
+  .field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+  
+  .field input {
+    padding: 12px;
+    font-size: 16px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%; /* Ensure inputs take up the full width */
+  }
+  
+  .field label {
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+  
+  .field button {
+    padding: 10px;
+    background-color: #1eb2a6;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+  }
+  
+  .field button:hover {
+    background-color: #178f82;
+  }
+  
+  /* Predict Crowd Section */
+  .predicted-crowd {
+    margin-top: 20px;
+  }
+  
+  .predicted-crowd input {
+    padding: 12px;
+    font-size: 16px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  /* Create Event Button */
+  .create-button {
+    margin-top: 30px;
+    padding: 10px 20px;
+    background-color: #1eb2a6;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+  }
+  
+  .create-button:hover {
+    background-color: #178f82;
+  }
+  
+  /* Popup */
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(29, 244, 58, 0.923);
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+  font-size: 18px;
+  z-index: 2000;
+  text-align: center;
+}

@@ -11,6 +11,10 @@ import EventPage from './eventDetails/EventPage.js'; // Import the EventPage com
 import MyTickets from './MyTickets/MyTickets.js';
 import Footer from './footer/footer.js';
 import Home from "./home/Home";
+import Admin_add from "./Admin/admin_add.js";
+import Create_Event from "./Admin/create_event.js";
+import Admin_Navbar from './admin_navbar/admin_navbar.js';
+
 
 function App() {
   const [tickets, setTickets] = useState([]); // Store registered tickets globally
@@ -25,7 +29,8 @@ function App() {
                   <Route path='/events' element={<><Navbar/><Events/><Footer/></>}/>
                   <Route path='/event/:id' element={<><Navbar /><EventPage setTickets={setTickets} /><Footer/></>} />
                   <Route path='/myTickets' element={<><Navbar /><MyTickets tickets={tickets} /><Footer/></>} /> 
-
+                  <Route path='/admin_add' element={<><Admin_Navbar/><Admin_add/><Footer/></>} />
+                  <Route path='/create_event' element={<><Admin_Navbar/><Create_Event/><Footer/></>} />
               </Routes>
       </Router>
     </FormProviderLogin>
