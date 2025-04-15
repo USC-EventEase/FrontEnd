@@ -62,3 +62,49 @@
 .delete-button:hover {
   background-color: #ef4444; /* Tailwind red-500 */
 }
+.validate-button {
+  margin-top: 0.5rem;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #60a5fa;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.validate-button:hover {
+  background-color: #3b82f6;
+}
+
+.qr-scan-placeholder {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 2px dashed #888;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.camera-box {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.validated-message {
+  margin-top: 0.75rem;
+  font-weight: 600;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.success {
+  color: green;
+}
+
+.error {
+  color: red;
+}
