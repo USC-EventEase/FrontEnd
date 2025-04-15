@@ -27,6 +27,9 @@ const Navbar = () => {
             <li>
               <Link to="/myTickets">My Tickets</Link>
             </li>
+            <li>
+              <Link to="/">Log out</Link>
+            </li>
           </ul>
         </nav>
       </header>
@@ -35,4 +38,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-

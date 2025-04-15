@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './create_event.css';
+import { useParams } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import { API_BASE_URL } from '../config';
+
 
 const CreateEvent = () => {
+  const { id } = useParams();
+  const isUpdateMode = !!id; // true if we have an id
   const [eventName, setEventName] = useState('');
   const [eventLocation, setEventLocation] = useState('');
   const [vipTickets, setVipTickets] = useState('');
@@ -15,6 +21,8 @@ const CreateEvent = () => {
   const [eventGenre, setEventGenre] = useState('');
   const [eventImage, setEventImage] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
+  const [eventImageURL, setEventImageURL] = useState("");
+  const [updateData, setUpdateData] = useState(null);
 
   const handlePredictCrowd = () => {
  // Here, you can call an API to fetch predicted crowd from the backend
@@ -39,28 +47,186 @@ const CreateEvent = () => {
           console.error('Error predicting crowd:', error);
         });
   };
+  useEffect(() => {
+    if (isUpdateMode) {
+      // Adjust the endpoint as needed; this assumes a GET endpoint to retrieve single event data
+      fetch(`${API_BASE_URL}/api/admin/event/${id}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${Cookies.get("token")}`,
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(response => response.json())
+        .then(data => {
+          // Update state with data coming from API:
+          setEventName(data.event_name || '');
+          setEventLocation(data.event_location || '');
+          // If the API returns the ticket data formatted as "tickets": { "VIP": {...}, "Regular": {...} }
+          setVipTickets(data.tickets?.VIP?.total_tickets || '');
+          setGeneralTickets(data.tickets?.Regular?.total_tickets || '');
+          setVipPrice(data.tickets?.VIP?.original_price || '');
+          setGeneralPrice(data.tickets?.Regular?.original_price || '');
+          setEventDescription(data.event_description || '');
+          setEventDate(data.event_date || '');
+          setEventTime(data.event_time || '');
+          setEventGenre(data.event_genre || '');
+          setEventImageURL(data.event_image || '');
+          setUpdateData(data);
+        })
+        .catch(error => {
+          console.error("Error loading event data:", error);
+        });
+    }
+  }, [id, isUpdateMode]);
 
-  const handleCreateEvent = () => {
+
+  const resetForm = () => {
+    setEventName('');
+    setEventLocation('');
+    setVipTickets('');
+    setGeneralTickets('');
+    setVipPrice('');
+    setGeneralPrice('');
+    setPredictedCrowd('');
+    setEventDescription('');
+    setEventDate('');
+    setEventTime('');
+    setEventGenre('');
+    setEventImage(null);
+    setEventImageURL('');
+  };
+
+  const uploadImage = () => {
+    const formData = new FormData();
+
+    formData.append("file", eventImage);
+    formData.append("upload_preset", "event_ease");
+    console.log(formData);
+    fetch(
+      "https://api.cloudinary.com/v1_1/dz3my06vk/image/upload",
+      {
+        method: "POST",
+        body: formData,
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);     // This will log the actual JSON response
+        setEventImageURL(data.secure_url);
+      });
+
+  };
+
+
+  const handleCreateEvent = async () => {
+    
     // Add functionality to create an event here (send data to the server or store)
-    console.log('Event Created:', {
-      eventName,
-      eventLocation,
-      vipTickets,
-      generalTickets,
-      vipPrice,
-      generalPrice,
-      eventDescription,
-      eventDate,
-      eventTime,
-      eventGenre,
-      eventImage,
-    });
+    if(isUpdateMode){
+      console.log('Event Updated:', {
+        eventName,
+        eventLocation,
+        vipTickets,
+        generalTickets,
+        vipPrice,
+        generalPrice,
+        eventDescription,
+        eventDate,
+        eventTime,
+        eventGenre,
+        eventImage,
+      });
+      uploadImage();
+      const response = await fetch(`${API_BASE_URL}/api/admin/event/${id}`, {
+        method: "PUT",
+        headers: {
+          'Authorization': `Bearer ${Cookies.get("token")}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          "event_name":eventName,
+          "event_description":eventDescription,
+          "event_date":eventDate,
+          "event_time":eventTime,
+          "event_genre":eventGenre,
+          "event_image":eventImageURL,
+          "event_location":eventLocation,
+          "tickets":{
+            "VIP":{
+              "total_tickets": vipTickets,
+              "original_price": vipPrice,
+              "current_price": updateData.tickets?.VIP?.current_price,
+              "available_tickets": vipTickets > updateData.tickets?.VIP?.available_tickets ? updateData.tickets?.VIP?.available_tickets + (vipTickets - updateData.tickets?.VIP?.total_tickets) :vipTickets
+            },
+            "Regular":{
+              "total_tickets": generalTickets,
+              "original_price": generalPrice,
+              "current_price": updateData.tickets?.Regular?.current_price,
+              "available_tickets": generalTickets > updateData.tickets?.Regular?.available_tickets ? updateData.tickets?.Regular?.available_tickets  + (generalTickets - updateData.tickets?.Regular?.total_tickets) : generalTickets
+            }
+          }
+        }),
+    })
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(err => console.error(err));
+    }
+    else{
+      console.log('Event Created:', {
+        eventName,
+        eventLocation,
+        vipTickets,
+        generalTickets,
+        vipPrice,
+        generalPrice,
+        eventDescription,
+        eventDate,
+        eventTime,
+        eventGenre,
+        eventImage,
+      });
+      uploadImage();
+      const response = await fetch(`${API_BASE_URL}/api/admin/event`, {
+        method: "POST",
+        headers: {
+          'Authorization': `Bearer ${Cookies.get("token")}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          "event_name":eventName,
+          "event_description":eventDescription,
+          "event_date":eventDate,
+          "event_time":eventTime,
+          "event_genre":eventGenre,
+          "event_image":eventImageURL,
+          "event_location":eventLocation,
+          "tickets":{
+            "VIP":{
+              "total_tickets": vipTickets,
+              "original_price": vipPrice,
+              "current_price": vipPrice,
+              "available_tickets": vipTickets
+            },
+            "Regular":{
+              "total_tickets": generalTickets,
+              "original_price": generalPrice,
+              "current_price": generalPrice,
+              "available_tickets": generalTickets
+            }
+          }
+        }),
+    })
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(err => console.error(err));
+    }
      // Show success popup
      setShowPopup(true);
 
      // Hide popup after 3 seconds
      setTimeout(() => {
        setShowPopup(false);
+       resetForm();
      }, 3000); // 3 seconds delay for the popup
   };
 
@@ -145,12 +311,19 @@ const CreateEvent = () => {
         </div>
 
         {/* Create Event button */}
-        <div className="field">
+        {isUpdateMode? <div className="field">
+          <button className="create-button" onClick={handleCreateEvent}>Update Event</button>
+        </div>: <div className="field">
           <button className="create-button" onClick={handleCreateEvent}>Create Event</button>
-        </div>
+        </div>}
+        
+
       </section>
        {/* Success Popup */}
        {showPopup && (
+        isUpdateMode?<div className="popup">
+        <p>Event updated successfully!</p>
+      </div> :
         <div className="popup">
           <p>Event created successfully!</p>
         </div>
