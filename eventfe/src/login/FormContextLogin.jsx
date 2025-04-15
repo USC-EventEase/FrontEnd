@@ -6,7 +6,7 @@ export const FormContextLogin = createContext();
 // Step 2: Create Provider
 export const FormProviderLogin = ({ children }) => {
     const [formDataLogin, setFormDataLogin] = useState({
-        username: '',
+        email: '',
         password: ''
     });
 

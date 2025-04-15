@@ -9,11 +9,13 @@
 .my-tickets-header {
   background-color: #333;
   color: white;
-  padding: 10px 20px;
+  margin-top: 60px;
+  height: 40px;
+  padding-top: 10px;
 }
 
 .my-tickets-header h1 {
-  font-size: 24px;
+  font-size: 20px;
 }
 
 /* Background Image Styling */
