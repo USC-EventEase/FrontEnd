@@ -1,0 +1,64 @@
+.event-analytics-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  padding-top: 6rem;
+}
+
+.event-analytics-title {
+  border: 2px solid black;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+.event-cards-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.event-card {
+  border: 2px solid black;
+  padding: 1rem;
+  width: 300px;
+  border-radius: 10px;
+}
+
+.event-card table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.event-card td {
+  padding: 0.5rem;
+  vertical-align: top;
+  font-size: 0.95rem;
+}
+
+.event-card tr td:first-child {
+  font-weight: bold;
+  width: 50%;
+}
+
+.delete-button {
+  margin-top: 1rem;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #f87171; /* Tailwind red-400 */
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.delete-button:hover {
+  background-color: #ef4444; /* Tailwind red-500 */
+}
