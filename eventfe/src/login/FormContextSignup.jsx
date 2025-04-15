@@ -9,7 +9,7 @@ export const FormProviderSignup = ({ children }) => {
         name: '',
         email: '',
         password: '',
-        type: 'user'
+        type: ''
     });
 
     return (

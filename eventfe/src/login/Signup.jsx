@@ -37,7 +37,6 @@ const Signup = () => {
       setError(null);
   
       try {
-        console.log(formDataSignup.type);
         const response = await signup(formDataSignup.name, formDataSignup.email, formDataSignup.password, formDataSignup.type);
   
         if(response.ok) {
@@ -82,7 +81,15 @@ const Signup = () => {
           </div>
           <div>
             <label htmlFor="password">Password</label>
-            <input type="password" id="password" name="password" value={formDataSignup.password} placeholder="Enter you password" onChange={handleChange}/>
+            <input type="password" id="password" name="password" value={formDataSignup.password} placeholder="Enter your password" onChange={handleChange}/>
+          </div>
+          <div>
+            <label htmlFor="type">Account Type</label>
+            <select id="type" name="type" value={formDataSignup.type} onChange={handleChange}>
+              <option value="">Select an option</option>
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
           </div>
           <button type="submit" onClick={handleSubmit}>
             Submit
