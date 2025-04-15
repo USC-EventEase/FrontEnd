@@ -1,169 +1,171 @@
-/* src/events/EventPage.css */
-
 /* General Page Styling */
 .event-page {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    width: 100%;
-    box-sizing: border-box; 
-    min-height: 100vh;  /* Ensures the page takes the full height of the viewport */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* Ensures footer is at the bottom */
-    padding-bottom: 50px;
-    padding-top: 0px;
-  }
-  
-  /* Event Header */
-  .event-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #333;
-    color: white;
-    padding: 10px 20px;
-    width: 100%;
-    text-align: center;
-  }
-  
-  .event-logo {
-    height: 50px;
-  }
-  
-  .event-name {
-    font-size: 24px;
-  }
-  
-  /* Background Image Section */
-  .event-background img {
-    width: 100%;
-    height: 300px;
-    object-fit: cover;
-    margin-top: 20px;
-  }
-  
-  /* Event Details and Ticketing Section */
-  .event-details {
-    padding: 20px;
-    text-align: center;
-    width: 100%;
-  }
-  
-  .event-details h2 {
-    margin-bottom: 20px;
-  }
-  
-  .ticketing {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin-top: 20px;
-  }
-  
-  .ticket-type {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 18px;
-  }
-  
-  .ticket-type input {
-    padding: 10px;
-    font-size: 18px;
-    margin-top: 10px;
-    width: 80px;  /* Set a fixed width for the input fields */
-    text-align: center;
-  }
-  
-  .register-button {
-    text-align: center;
-    margin-top: 30px;
-  }
-  
-  .register-button button {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #1eb2a6;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .register-button button:hover {
-    background-color: #178f82;
-  }
-  
-  .popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(29, 244, 58, 0.923);
-    color: white;
-    padding: 20px;
-    border-radius: 5px;
-    font-size: 18px;
-    z-index: 2000;
-  }
-  
+  font-family: Arial, sans-serif;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box; 
+  min-height: 100vh;  /* Ensures the page takes the full height of the viewport */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Ensures footer is at the bottom */
+  padding-bottom: 50px;
+  padding-top: 0px;
+}
 
-  /* Similar Events Section */
+/* Event Header */
+.event-header {
+  background-color: #333;
+  color: white;
+  margin-top: 60px;
+  height: 40px;
+  padding-top: 10px;
+  width: 100%;
+  text-align: center;
+}
+
+.event-header h1 {
+  font-size: 20px;
+}
+
+/* Background Image Section */
+.event-background img {
+  width: 100%;
+  height: 200px; /* Decreased the height */
+  object-fit: cover;
+  margin-top: 20px;
+}
+
+/* Event Details and Ticketing Section */
+.event-details {
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+}
+
+.event-details p {
+  font-size: 16px;
+  margin-bottom: 20px;
+  font-weight: 400; /* Make description text lighter */
+}
+
+.event-time-venue p {
+  font-size: 16px;
+  margin: 10px 0;
+}
+
+.ticketing {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.ticket-type {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 18px;
+}
+
+.ticket-type input {
+  padding: 10px;
+  font-size: 18px;
+  margin-top: 10px;
+  width: 80px;  /* Set a fixed width for the input fields */
+  text-align: center;
+}
+
+.ticket-type p {
+  padding-top: 5px;
+}
+
+.register-button {
+  text-align: center;
+  margin-top: 0px;
+}
+
+.register-button button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #1eb2a6;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.register-button button:hover {
+  background-color: #178f82;
+}
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(29, 244, 58, 0.923);
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+  font-size: 18px;
+  z-index: 2000;
+}
+
+/* Similar Events Section */
 .similar-events {
-    padding: 20px;
-    text-align: center;
-  }
-  
-  .similar-events h3 {
-    margin-bottom: 20px;
-  }
-  
-  .similar-events-list {
-    display: flex;
-    justify-content: space-around;
-  }
-  
-  .event-card {
-    border: 1px solid #ccc;
-    padding: 10px;
-    width: 200px;
-    text-align: center;
-  }
-  
-  .event-card button {
-    margin-top: 10px;
-    padding: 5px 10px;
-    background-color: #1eb2a6;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .event-card button:hover {
-    background-color: #178f82;
-  }
-  
-  /* Chatbot Logo */
+  padding: 20px;
+  text-align: center;
+}
+
+.similar-events h3 {
+  margin-bottom: 20px;
+}
+
+.similar-events-list {
+  display: flex;
+  justify-content: space-around;
+}
+
+.event-card {
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 200px;
+  text-align: center;
+}
+
+.event-card button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #1eb2a6;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.event-card button:hover {
+  background-color: #178f82;
+}
+
+/* Chatbot Logo */
 .chatbot-logo {
-    position: fixed;
-    bottom: 90px;
-    right: 60px;
-    width: 50px;
-  }
-  
-  .chatbot-logo img {
-    width: 100%;
-  }
-  
-  /* Footer */
-  .footer {
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 10px;
-    margin-top: 30px;
-    width: 100%;
-    position: relative;
-    bottom: 0;
-    z-index: 0; /* Ensures navbar is on top of other elements */
-  }
-  
+  position: fixed;
+  bottom: 90px;
+  right: 60px;
+  width: 50px;
+}
+
+.chatbot-logo img {
+  width: 100%;
+}
+
+/* Footer */
+.footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  margin-top: 30px;
+  width: 100%;
+  position: relative;
+  bottom: 0;
+  z-index: 0; /* Ensures navbar is on top of other elements */
+}

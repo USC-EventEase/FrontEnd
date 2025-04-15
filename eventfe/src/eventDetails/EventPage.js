@@ -12,13 +12,16 @@ const EventPage = ({ setTickets }) => {
   const [currentEvent, setCurrentEvent] = useState({
     id: 1,
     name: "Event Name",
-    details: "Details for the event.",
+    description: "One line description for the event.",
     genre: "Music", 
     image: "/sample event bg.jpg",
-    time: "2:00 PM, 10th April 2025",
+    date: "10th April 2025", 
+    time: "2:00 PM",
     venue: "Event Hall 1, City Center",
     vipTicketPrice: 20,
     generalTicketPrice: 10,
+    totalVipTickets: 500,
+    totalGeneralTickets: 700,
   });
 
   const [showPopup, setShowPopup] = useState(false);  // State for showing popup
@@ -29,9 +32,9 @@ const EventPage = ({ setTickets }) => {
   }, [vipTickets, generalTickets, currentEvent]);
 
   const similarEvents = [
-    { id: 2, name: "Event One", time: "4:00 PM, 30th April 2025", venue: "USC Shrine", genre:"Music", vipTicketPrice: 30, generalTicketPrice: 20 },
-    { id: 3, name: "Event Two", time: "5:00 PM, 20th April 2025", venue: "Crypto Arena", genre:"Sports", vipTicketPrice: 40, generalTicketPrice: 30 },
-    { id: 4, name: "Event Three", time: "6:00 PM, 24th April 2025", venue: "Santa Monica Pier", genre:"Art", vipTicketPrice: 50, generalTicketPrice: 80 }
+    { id: 2, name: "Event One", description: "One line description for the event.", time: "4:00 PM", date: "30th April 2025", venue: "USC Shrine", genre:"Music", vipTicketPrice: 30, generalTicketPrice: 20, totalVipTickets: 600, totalGeneralTickets: 900 },
+    { id: 3, name: "Event Two", description: "One line description for the event.", time: "5:00 PM", date: "20th April 2025", venue: "Crypto Arena", genre:"Sports", vipTicketPrice: 40, generalTicketPrice: 30, totalVipTickets: 700, totalGeneralTickets: 1000 },
+    { id: 4, name: "Event Three",description: "One line description for the event.", time: "6:00 PM", date: "24th April 2025", venue: "Santa Monica Pier", genre:"Art", vipTicketPrice: 50, generalTicketPrice: 80, totalVipTickets: 800, totalGeneralTickets: 1200 }
   ];
 
   useEffect(() => {
@@ -51,6 +54,7 @@ const EventPage = ({ setTickets }) => {
     const newTicket = {
       eventName: currentEvent.name,
       time: currentEvent.time,
+      date: currentEvent.date,
       venue: currentEvent.venue,
       genre: currentEvent.genre,
       vipTickets,
@@ -80,11 +84,14 @@ const EventPage = ({ setTickets }) => {
       </section>
 
       <section className="event-details">
-        <h2>Event Details</h2>
+      <p>{currentEvent.description}</p> 
         <div className="event-time-venue">
+          <p><strong>Date:</strong> {currentEvent.date}</p>
           <p><strong>Time:</strong> {currentEvent.time}</p>
           <p><strong>Venue:</strong> {currentEvent.venue}</p>
           <p><strong>Genre:</strong> {currentEvent.genre}</p>
+          <p><strong>Total VIP Tickets Available:</strong> {currentEvent.totalVipTickets}</p>
+          <p><strong>Total General Tickets Available:</strong> {currentEvent.totalGeneralTickets}</p>
         </div>
 
         <div className="ticketing">
@@ -95,7 +102,7 @@ const EventPage = ({ setTickets }) => {
               value={vipTickets} 
               onChange={(e) => setVipTickets(e.target.value)} 
               min="0" 
-              max="10" 
+              max={currentEvent.totalVipTickets} 
             />
             <p>Price: ${currentEvent.vipTicketPrice}</p>
           </div>
@@ -106,7 +113,7 @@ const EventPage = ({ setTickets }) => {
               value={generalTickets} 
               onChange={(e) => setGeneralTickets(e.target.value)} 
               min="0" 
-              max="10" 
+              max={currentEvent.totalGeneralTickets} 
             />
             <p>Price: ${currentEvent.generalTicketPrice}</p>
           </div>
@@ -134,6 +141,7 @@ const EventPage = ({ setTickets }) => {
           {similarEvents.map((event) => (
             <div key={event.id} className="event-card">
               <h4>{event.name}</h4>
+              <p><strong>Date:</strong> {event.date}</p>
               <p><strong>Time:</strong> {event.time}</p>
               <p><strong>Venue:</strong> {event.venue}</p>
               <button onClick={() => handleSimilarEventClick(event)}>Book</button>

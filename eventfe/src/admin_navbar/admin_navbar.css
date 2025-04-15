@@ -1,0 +1,58 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.navbar {
+    background-color: black;
+    color: white; /* Ensures text is readable */
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 50px;
+    position: fixed; /* Keeps the navbar at the top */
+    top: 0;
+    left: 0;
+    z-index: 1000; /* Ensures navbar is on top of other elements */
+}
+/* Ensure the logo fits nicely in the navbar */
+.navbar-logo {
+    height: 40px; /* Adjust as needed */
+    width: auto;
+    margin-right: 20px; /* Optional: Add some space between the logo and menu items */
+  }
+  
+
+header {
+    /* background-color: rgba(255, 255, 255, 0.2); */
+    /* margin: 0 30px; */
+    width: 100%; /*Ensure header is full width */
+    padding: 0 30px;  /* Optional: Adjust padding inside the navbar */
+}
+
+/* Apply Flexbox directly to the <ul> for horizontal layout */
+header ul.flexSB {
+    display: flex;
+    /* justify-content: space-around; Optional: space the items evenly */
+    justify-content: center; /* Centers navbar items horizontally */
+    align-items: center;  /* Aligns items vertically */
+    padding: 20px 20px;
+    list-style-type: none; /* Remove default list bullets */
+}
+
+header li {
+    margin-right: 40px;
+}
+
+header ul li a {
+    color: #fff;
+    font-weight: 500;
+    transition: 0.5s;
+}
+
+header ul li a:hover {
+    color: #1eb2a6;
+}
+
+
