@@ -21,6 +21,12 @@ const Navbar = () => {
             <li>
               <Link to="/create_event">Create Event</Link>
             </li>
+            <li>
+              <Link to="/admin/analytics">Event Analytics</Link>
+            </li>
+            <li>
+              <Link to="/">Log out</Link>
+            </li>
           </ul>
         </nav>
       </header>
@@ -29,4 +35,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-

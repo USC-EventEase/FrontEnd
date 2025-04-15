@@ -1,10 +1,11 @@
 body {
-  padding-bottom: 50px;  /* Adjust based on the footer height */
+  padding-bottom: 50px; /* Adjust based on the footer height */
   padding-top: 50px;
 }
 
 .events-container {
   padding: 2rem;
+  padding-top: 4rem;
 }
 
 .events-grid {
@@ -52,4 +53,18 @@ body {
 
 .book-button:hover {
   background-color: #178f82;
+}
+.events-container h1 {
+  text-align: center;
+  padding: 15px;
+}
+
+.event-search-bar {
+  margin: 1rem auto;
+  display: block;
+  padding: 0.5rem 1rem;
+  width: 50%;
+  font-size: 1rem;
+  border: 2px solid #ccc;
+  border-radius: 6px;
 }
