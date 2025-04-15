@@ -53,7 +53,7 @@ const Login = () => {
 				}
 
 				else {
-					
+					navigate('/create_event')
 				}
 			}
 
