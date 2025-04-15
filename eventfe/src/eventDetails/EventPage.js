@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './EventPage.css';
 import { useParams } from 'react-router-dom';
 import { QRCode } from 'qrcode.react';
+import Cookies from 'js-cookie';
+import { API_BASE_URL } from '../config';
 
 const EventPage = ({ setTickets }) => {
   const { id } = useParams();
@@ -9,20 +11,7 @@ const EventPage = ({ setTickets }) => {
   const [generalTickets, setGeneralTickets] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
 
-  const [currentEvent, setCurrentEvent] = useState({
-    id: 1,
-    name: "Event Name",
-    description: "One line description for the event.",
-    genre: "Music", 
-    image: "/sample event bg.jpg",
-    date: "10th April 2025", 
-    time: "2:00 PM",
-    venue: "Event Hall 1, City Center",
-    vipTicketPrice: 20,
-    generalTicketPrice: 10,
-    totalVipTickets: 500,
-    totalGeneralTickets: 700,
-  });
+  const [currentEvent, setCurrentEvent] = useState({});
 
   const [showPopup, setShowPopup] = useState(false);  // State for showing popup
 
@@ -38,12 +27,28 @@ const EventPage = ({ setTickets }) => {
   ];
 
   useEffect(() => {
-    const event = similarEvents.find(e => e.id === parseInt(id));
-    if (event) {
-      setCurrentEvent(event);
-    }
+    const fetchEvent = async () => {
+      try {
+        // Adjust the URL to your API endpoint as needed.
+        const response = await fetch(`${API_BASE_URL}/api/user/events/${id}`,{
+          method: "GET",
+          headers: {
+            'Authorization': `Bearer ${Cookies.get("token")}`,
+            'Content-Type': 'application/json',
+          }});
+        if (!response.ok) {
+          console.log(response);
+          throw new Error('Network response was not ok');
+        }
+        const eventData = await response.json();
+        console.log(eventData)
+        // setCurrentEvent(eventData);
+      } catch (error) {
+        console.error('Error fetching event data:', error);
+      }
+    };
+    fetchEvent();
   }, [id]);
-
   const handleSimilarEventClick = (event) => {
     setCurrentEvent(event); 
     setVipTickets(0);        
