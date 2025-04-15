@@ -31,6 +31,7 @@ function App() {
                   <Route path='/event/:id' element={<><Navbar /><EventPage setTickets={setTickets} /><Footer/></>} />
                   <Route path='/myTickets' element={<><Navbar /><MyTickets tickets={tickets} /><Footer/></>} /> 
                   <Route path='/create_event' element={<><Admin_Navbar /><Create_Event /> <Footer/></>} />
+                  <Route path='/update_event/:id' element={<><Admin_Navbar /><Create_Event /> <Footer/></>} />
               </Routes>
       </Router>
       </FormProviderSignup>
