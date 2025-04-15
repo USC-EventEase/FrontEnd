@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import './create_event.css';
 import { useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { API_BASE_URL } from '../config';
 
 
 const CreateEvent = () => {
-  const API_BASE_URL = 'http://localhost:3001';
   const { id } = useParams();
   const isUpdateMode = !!id; // true if we have an id
   const [eventName, setEventName] = useState('');
