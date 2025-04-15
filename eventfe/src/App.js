@@ -20,73 +20,23 @@ function App() {
   const [tickets, setTickets] = useState([]); // Store registered tickets globally
   return (
     <>
-      <FormProviderLogin>
-        <FormProviderSignup>
-          <Router>
-            <Routes>
-              <Route path="/" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route
-                path="/home"
-                element={
-                  <>
-                    <Navbar />
-                    <Home /> <Footer />
-                  </>
-                }
-              />
-              <Route
-                path="/events"
-                element={
-                  <>
-                    <Navbar />
-                    <Events />
-                    <Footer />
-                  </>
-                }
-              />
-              <Route
-                path="/event/:id"
-                element={
-                  <>
-                    <Navbar />
-                    <EventPage setTickets={setTickets} />
-                    <Footer />
-                  </>
-                }
-              />
-              <Route
-                path="/myTickets"
-                element={
-                  <>
-                    <Navbar />
-                    <MyTickets tickets={tickets} />
-                    <Footer />
-                  </>
-                }
-              />
-              <Route
-                path="/create_event"
-                element={
-                  <>
-                    <Admin_Navbar />
-                    <Create_Event /> <Footer />
-                  </>
-                }
-              />
-              <Route
-                path="/admin/analytics"
-                element={
-                  <>
-                    <Admin_Navbar />
-                    <EventAnalytics /> <Footer />
-                  </>
-                }
-              />
-            </Routes>
-          </Router>
-        </FormProviderSignup>
-      </FormProviderLogin>
+    <FormProviderLogin>
+      <FormProviderSignup>
+        <Router>
+              <Routes>
+                  <Route path='/' element={<Login />} />
+                  <Route path='/signup' element={<Signup />} />
+                  <Route path='/home' element={<><Navbar /><Home /> <Footer/></>} />
+                  <Route path='/events' element={<><Navbar/><Events/><Footer/></>}/>
+                  <Route path='/event/:id' element={<><Navbar /><EventPage setTickets={setTickets} /><Footer/></>} />
+                  <Route path='/myTickets' element={<><Navbar /><MyTickets tickets={tickets} /><Footer/></>} /> 
+                  <Route path='/create_event' element={<><Admin_Navbar /><Create_Event /> <Footer/></>} />
+                  <Route path='/update_event/:id' element={<><Admin_Navbar /><Create_Event /> <Footer/></>} />
+                  <Route path="/admin/analytics" element={<><Admin_Navbar /><EventAnalytics /> <Footer /></>}/>
+              </Routes>
+      </Router>
+      </FormProviderSignup>
+    </FormProviderLogin>
     </>
   );
 }
