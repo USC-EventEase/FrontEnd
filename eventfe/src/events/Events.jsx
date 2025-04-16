@@ -1,34 +1,66 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./events.css";
+import { all_events } from "../api/user_events";
+import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
 
-const eventsData = [
-  {
-    id: 1,
-    title: "Event One",
-    description: "Description for Event One.",
-    imageUrl: "path/to/image1.jpg",
-  },
-  {
-    id: 2,
-    title: "Event Two",
-    description: "Description for Event Two.",
-    imageUrl: "path/to/image2.jpg",
-  },
-  {
-    id: 3,
-    title: "Ted talk",
-    description: "Latest tech insights.",
-    imageUrl: "path/to/image3.jpg",
-  },
-];
+let eventsData = [];
 
 const Events = () => {
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async ()=> {
+      try {
+        const response = await all_events();
+
+        if(response.status === 401) {
+          Cookies.remove('token');
+          Cookies.remove('userId');
+          Cookies.remove('type');
+          navigate('/');
+        }
+
+        if(response.ok) {
+          eventsData = response.data;
+        }
+
+      } catch(err) {
+        console.error("Error fetching data: ", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredEvents = eventsData.filter((event) =>
-    event.title.toLowerCase().includes(searchTerm.toLowerCase())
+    event.event_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  function DateTimeDisplay({ date, time }) {
+    const formattedDateTime = new Date(`${date}T${time}`).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+  
+    return (
+      <div>
+        <p>{formattedDateTime}</p>
+      </div>
+    );
+  }
+  
+  if (loading) return <div className="text-center p-4">Loading events...</div>;
 
   return (
     <div className="events-container">
@@ -45,16 +77,18 @@ const Events = () => {
       <div className="events-grid">
         {filteredEvents.length > 0 ? (
           filteredEvents.map((event) => (
-            <div key={event.id} className="event-card">
+            <div key={event._id} className="event-card">
               <img
-                src={event.imageUrl}
-                alt={event.title}
+                src={event.event_image}
+                alt={event.event_name}
                 className="event-image"
               />
-              <h2 className="event-title">{event.title}</h2>
-              <p className="event-description">{event.description}</p>
-              <Link to={`/event/${event.id}`} className="book-button">
-                Book
+              <h2 className="event-title">{event.event_name}</h2>
+              <p className="event-venue">{event.event_location}</p>
+              <br></br>
+              <DateTimeDisplay date={event.event_date} time={event.event_time} />
+              <Link to={`/event/${event._id}`} className="book-button">
+                View
               </Link>
             </div>
           ))
