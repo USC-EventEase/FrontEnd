@@ -77,7 +77,7 @@ const Events = () => {
       <div className="events-grid">
         {filteredEvents.length > 0 ? (
           filteredEvents.map((event) => (
-            <div key={event.id} className="event-card">
+            <div key={event._id} className="event-card">
               <img
                 src={event.event_image}
                 alt={event.event_name}
@@ -87,8 +87,8 @@ const Events = () => {
               <p className="event-venue">{event.event_location}</p>
               <br></br>
               <DateTimeDisplay date={event.event_date} time={event.event_time} />
-              <Link to={`/event/${event.id}`} className="book-button">
-                Book
+              <Link to={`/event/${event._id}`} className="book-button">
+                View
               </Link>
             </div>
           ))

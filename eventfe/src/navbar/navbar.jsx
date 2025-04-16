@@ -2,9 +2,16 @@ import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import "./navbar.css";
 import { FormContextLogin } from "../login/FormContextLogin";
+import Cookies from 'js-cookie';
 
 const Navbar = () => {
   const { formDataLogin } = useContext(FormContextLogin);
+
+  function logout() {
+    Cookies.remove('token');
+    Cookies.remove('userId');
+    Cookies.remove('type');
+  }
 
   return (
     <div className="navbar">
@@ -28,7 +35,7 @@ const Navbar = () => {
               <Link to="/myTickets">My Tickets</Link>
             </li>
             <li>
-              <Link to="/">Log out</Link>
+              <Link to="/" onClick={logout}>Log out</Link>
             </li>
           </ul>
         </nav>
