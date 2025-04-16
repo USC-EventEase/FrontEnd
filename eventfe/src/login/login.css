@@ -55,6 +55,15 @@
     border: 2px solid #bce0fd;
     border-radius: 8px;
   }
+
+  .form select {
+    height: 50px;
+    width: 100%;
+    padding: 15px;
+    background-color: #f1f9ff;
+    border: 2px solid #bce0fd;
+    border-radius: 8px;
+  }
   
   .form button {
     height: 40px;
