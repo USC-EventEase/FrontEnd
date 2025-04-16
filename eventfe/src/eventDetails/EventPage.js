@@ -3,74 +3,129 @@ import './EventPage.css';
 import { useParams } from 'react-router-dom';
 import { QRCode } from 'qrcode.react';
 import Cookies from 'js-cookie';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, AI_BASE_URL } from '../config';
+import { useNavigate } from 'react-router-dom';
+
 
 const EventPage = ({ setTickets }) => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [vipTickets, setVipTickets] = useState(0);
   const [generalTickets, setGeneralTickets] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [rec, setRec] = useState(null);
+  const [recommendedEvents, setRecommendedEvents] = useState(null);
 
   const [currentEvent, setCurrentEvent] = useState({});
 
   const [showPopup, setShowPopup] = useState(false);  // State for showing popup
 
   useEffect(() => {
-    const total = (vipTickets * currentEvent.vipTicketPrice) + (generalTickets * currentEvent.generalTicketPrice);
+    const total = (vipTickets * currentEvent.tickets?.VIP?.current_price) +
+              (generalTickets * currentEvent.tickets?.Regular?.current_price);
+
     setTotalAmount(total);
   }, [vipTickets, generalTickets, currentEvent]);
 
-  const similarEvents = [
-    { id: 2, name: "Event One", description: "One line description for the event.", time: "4:00 PM", date: "30th April 2025", venue: "USC Shrine", genre:"Music", vipTicketPrice: 30, generalTicketPrice: 20, totalVipTickets: 600, totalGeneralTickets: 900 },
-    { id: 3, name: "Event Two", description: "One line description for the event.", time: "5:00 PM", date: "20th April 2025", venue: "Crypto Arena", genre:"Sports", vipTicketPrice: 40, generalTicketPrice: 30, totalVipTickets: 700, totalGeneralTickets: 1000 },
-    { id: 4, name: "Event Three",description: "One line description for the event.", time: "6:00 PM", date: "24th April 2025", venue: "Santa Monica Pier", genre:"Art", vipTicketPrice: 50, generalTicketPrice: 80, totalVipTickets: 800, totalGeneralTickets: 1200 }
-  ];
-
-  useEffect(() => {
-    const fetchEvent = async () => {
-      try {
-        // Adjust the URL to your API endpoint as needed.
-        const response = await fetch(`${API_BASE_URL}/api/user/events/${id}`,{
+  const fetchRecommendedEvents = async (recData) => {
+    try {
+      // Create an array of fetch promises using the event_id from each recommendation.
+      const fetchPromises = recData.map((recItem) => {
+        // Adjust the URL to match your API. For example:
+        return fetch(`${API_BASE_URL}/api/user/events/${recItem.event_id}`,{
           method: "GET",
           headers: {
             'Authorization': `Bearer ${Cookies.get("token")}`,
             'Content-Type': 'application/json',
-          }});
-        if (!response.ok) {
-          console.log(response);
-          throw new Error('Network response was not ok');
-        }
-        const eventData = await response.json();
-        console.log(eventData)
-        // setCurrentEvent(eventData);
-      } catch (error) {
-        console.error('Error fetching event data:', error);
+          }})
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`Network response was not ok for event ${recItem.event_id}`);
+            }
+            return response.json();
+          });
+      });
+      
+      // Wait until all fetch calls complete
+      const eventsData = await Promise.all(fetchPromises);
+      // console.log('Recommended event details:', eventsData);
+      // Now, for example, you might store these details in your state.
+      setRecommendedEvents(eventsData);
+    } catch (error) {
+      console.error('Error fetching recommended events:', error);
+    }
+  };
+  const fetchEvent = async () => {
+    try {
+      // Adjust the URL to your API endpoint as needed.
+      const response = await fetch(`${API_BASE_URL}/api/user/events/${id}`,{
+        method: "GET",
+        headers: {
+          'Authorization': `Bearer ${Cookies.get("token")}`,
+          'Content-Type': 'application/json',
+        }});
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
-    };
-    fetchEvent();
-  }, [id]);
-  const handleSimilarEventClick = (event) => {
-    setCurrentEvent(event); 
-    setVipTickets(0);        
-    setGeneralTickets(0);
+      const eventData = await response.json();
+      // console.log(eventData);
+      setCurrentEvent(eventData);
+    } catch (error) {
+      console.error('Error fetching event data:', error);
+    }
+  };
+  const fetchRecommendations = async () => {
+    try {
+      // Adjust the URL to your API endpoint as needed.
+      const response = await fetch(`${AI_BASE_URL}/api/get_recommendations?eventId=${id}`,{
+        method: "GET"});
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const eventData = await response.json();
+      // console.log(eventData);
+      setRec(eventData);
+      fetchRecommendedEvents(eventData);
+
+    } catch (error) {
+      console.error('Error fetching event data:', error);
+    }
   };
 
-  const handleRegister = () => {
-    const newTicket = {
-      eventName: currentEvent.name,
-      time: currentEvent.time,
-      date: currentEvent.date,
-      venue: currentEvent.venue,
-      genre: currentEvent.genre,
-      vipTickets,
-      generalTickets,
-      qrCode: `${currentEvent.name}-${vipTickets}-${generalTickets}`,
-    };
-    setTickets((prevTickets) => [...prevTickets, newTicket]);
-    console.log("New Ticket Registered:", newTicket);
+  useEffect(() => {
+    fetchEvent();
+    fetchRecommendations();
+
+  }, [id]);
+
+
+  const handleRegister = async () => {
+    await fetch(`${API_BASE_URL}/api/user/event/register`, {
+      method: "POST",
+      headers: {
+        'Authorization': `Bearer ${Cookies.get("token")}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        event_id: id,
+        tickets:{
+          VIP: { count: vipTickets, price: currentEvent.tickets?.VIP?.current_price },
+          Regular: { count: generalTickets, price: currentEvent.tickets?.Regular?.current_price }
+        }
+      }),
+    })
+      .then(response => response.json())
+      // .then(data => console.log(data))
+      .catch(err => console.error(err));
+    console.log("New Ticket Registered");
 
     // Show success popup
     setShowPopup(true);
+    setVipTickets(0);
+    setGeneralTickets(0);
+    setTotalAmount(0);
+    await fetchEvent();
+    await fetchRecommendations();
     
     // Hide popup after 3 seconds
     setTimeout(() => {
@@ -81,22 +136,22 @@ const EventPage = ({ setTickets }) => {
   return (
     <div className="event-page">
       <section className="event-header">
-        <h1 className="event-name">{currentEvent.name}</h1>
+        <h1 className="event-name">{currentEvent.event_name}</h1>
       </section>
 
       <section className="event-background">
-        <img src={currentEvent.image} alt="Event Background" />
+        <img src={currentEvent.event_image} alt="Event Background" />
       </section>
 
       <section className="event-details">
       <p>{currentEvent.description}</p> 
         <div className="event-time-venue">
-          <p><strong>Date:</strong> {currentEvent.date}</p>
-          <p><strong>Time:</strong> {currentEvent.time}</p>
-          <p><strong>Venue:</strong> {currentEvent.venue}</p>
-          <p><strong>Genre:</strong> {currentEvent.genre}</p>
-          <p><strong>Total VIP Tickets Available:</strong> {currentEvent.totalVipTickets}</p>
-          <p><strong>Total General Tickets Available:</strong> {currentEvent.totalGeneralTickets}</p>
+          <p><strong>Date:</strong> {currentEvent.event_date}</p>
+          <p><strong>Time:</strong> {currentEvent.event_time}</p>
+          <p><strong>Venue:</strong> {currentEvent.event_location}</p>
+          <p><strong>Genre:</strong> {currentEvent.event_genre}</p>
+          <p><strong>Total VIP Tickets Available:</strong> {currentEvent.tickets?.VIP?.available_tickets}</p>
+          <p><strong>Total General Tickets Available:</strong> {currentEvent.tickets?.Regular?.available_tickets}</p>
         </div>
 
         <div className="ticketing">
@@ -107,9 +162,9 @@ const EventPage = ({ setTickets }) => {
               value={vipTickets} 
               onChange={(e) => setVipTickets(e.target.value)} 
               min="0" 
-              max={currentEvent.totalVipTickets} 
+              max={currentEvent.tickets?.VIP?.available_tickets}
             />
-            <p>Price: ${currentEvent.vipTicketPrice}</p>
+            <p>Price: ${currentEvent.tickets?.VIP?.current_price}</p>
           </div>
           <div className="ticket-type">
             <label>General Ticket</label>
@@ -118,9 +173,9 @@ const EventPage = ({ setTickets }) => {
               value={generalTickets} 
               onChange={(e) => setGeneralTickets(e.target.value)} 
               min="0" 
-              max={currentEvent.totalGeneralTickets} 
+              max={currentEvent.tickets?.Regular?.available_tickets}
             />
-            <p>Price: ${currentEvent.generalTicketPrice}</p>
+            <p>Price: ${currentEvent.tickets?.Regular?.current_price}</p>
           </div>
         </div>
 
@@ -139,21 +194,22 @@ const EventPage = ({ setTickets }) => {
           <p>Event registered successfully!</p>
         </div>
       )}
-
+      {recommendedEvents?
       <section className="similar-events">
         <h3>Similar Events</h3>
         <div className="similar-events-list">
-          {similarEvents.map((event) => (
-            <div key={event.id} className="event-card">
-              <h4>{event.name}</h4>
-              <p><strong>Date:</strong> {event.date}</p>
-              <p><strong>Time:</strong> {event.time}</p>
-              <p><strong>Venue:</strong> {event.venue}</p>
-              <button onClick={() => handleSimilarEventClick(event)}>Book</button>
+          {recommendedEvents?.map((event) => (
+            <div key={event._id} className="event-card">
+              <h4>{event.event_name}</h4>
+              <p><strong>Date:</strong> {event.event_date}</p>
+              <p><strong>Time:</strong> {event.event_time}</p>
+              <p><strong>Venue:</strong> {event.event_location}</p>
+              <button onClick={() => navigate(`/event/${event._id}`)}>View</button>
             </div>
           ))}
         </div>
-      </section>
+      </section>:<></>
+      }
     </div>
   );
 };

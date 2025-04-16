@@ -3,9 +3,13 @@ import './create_event.css';
 import { useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { API_BASE_URL } from '../config';
+import { useNavigate } from 'react-router-dom';
+
 
 const CreateEvent = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const isUpdateMode = !!id; // true if we have an id
   const [eventName, setEventName] = useState('');
   const [eventLocation, setEventLocation] = useState('');
@@ -119,28 +123,28 @@ const CreateEvent = () => {
   // Handle event creation or update after the image upload has completed.
   const handleCreateEvent = async () => {
     // Wait for the image upload to complete and get the image URL.
-    console.log(eventImage)
+    // console.log(eventImage)
     const uploadedUrl = await uploadImage();
     if (!uploadedUrl) {
-      console.log(uploadedUrl);
+      // console.log(uploadedUrl);
       console.error("Image upload failed.");
       return;
     }
 
     if (isUpdateMode) {
-      console.log('Event Updated:', {
-        eventName,
-        eventLocation,
-        vipTickets,
-        generalTickets,
-        vipPrice,
-        generalPrice,
-        eventDescription,
-        eventDate,
-        eventTime,
-        eventGenre,
-        uploadedUrl,
-      });
+      // console.log('Event Updated:', {
+      //   eventName,
+      //   eventLocation,
+      //   vipTickets,
+      //   generalTickets,
+      //   vipPrice,
+      //   generalPrice,
+      //   eventDescription,
+      //   eventDate,
+      //   eventTime,
+      //   eventGenre,
+      //   uploadedUrl,
+      // });
       await fetch(`${API_BASE_URL}/api/admin/event/${id}`, {
         method: "PUT",
         headers: {
@@ -175,23 +179,29 @@ const CreateEvent = () => {
           },
         }),
       })
-        .then(response => response.json())
-        .then(data => console.log(data))
+      .then(response => {
+        if (response.status === 401) {
+          navigate('/');
+          return Promise.reject('Unauthorized');
+        }
+        return response.json();
+      })
+        // .then(data => console.log(data))
         .catch(err => console.error(err));
     } else {
-      console.log('Event Created:', {
-        eventName,
-        eventLocation,
-        vipTickets,
-        generalTickets,
-        vipPrice,
-        generalPrice,
-        eventDescription,
-        eventDate,
-        eventTime,
-        eventGenre,
-        uploadedUrl,
-      });
+      // console.log('Event Created:', {
+      //   eventName,
+      //   eventLocation,
+      //   vipTickets,
+      //   generalTickets,
+      //   vipPrice,
+      //   generalPrice,
+      //   eventDescription,
+      //   eventDate,
+      //   eventTime,
+      //   eventGenre,
+      //   uploadedUrl,
+      // });
       await fetch(`${API_BASE_URL}/api/admin/event`, {
         method: "POST",
         headers: {
@@ -222,8 +232,14 @@ const CreateEvent = () => {
           },
         }),
       })
-        .then(response => response.json())
-        .then(data => console.log(data))
+      .then(response => {
+        if (response.status === 401) {
+          navigate('/');
+          return Promise.reject('Unauthorized');
+        }
+        return response.json();
+      })
+        // .then(data => console.log(data))
         .catch(err => console.error(err));
     }
 
@@ -287,10 +303,10 @@ const CreateEvent = () => {
                 type="file"
                 onChange={(e) => {
                   if (e.target.files && e.target.files.length > 0) {
-                    console.log("Selected file:", e.target.files[0]); // Debug log
+                    // console.log("Selected file:", e.target.files[0]); // Debug log
                     setEventImage(e.target.files[0]);
                   } else {
-                    console.log("No file selected");
+                    // console.log("No file selected");
                     setEventImage(null);
                   }
                 }}
