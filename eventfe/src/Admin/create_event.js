@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { API_BASE_URL } from '../config';
 import { useNavigate } from 'react-router-dom';
+import { get_event, update_event, create_event } from '../api/admin_events';
 
 
 const CreateEvent = () => {
@@ -52,32 +53,31 @@ const CreateEvent = () => {
 
   useEffect(() => {
     if (isUpdateMode) {
-      // Retrieve event data when updating an event
-      fetch(`${API_BASE_URL}/api/admin/event/${id}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${Cookies.get("token")}`,
-          'Content-Type': 'application/json',
-        },
-      })
-        .then(response => response.json())
-        .then(data => {
-          setEventName(data.event_name || '');
-          setEventLocation(data.event_location || '');
-          setVipTickets(data.tickets?.VIP?.total_tickets || '');
-          setGeneralTickets(data.tickets?.Regular?.total_tickets || '');
-          setVipPrice(data.tickets?.VIP?.original_price || '');
-          setGeneralPrice(data.tickets?.Regular?.original_price || '');
-          setEventDescription(data.event_description || '');
-          setEventDate(data.event_date || '');
-          setEventTime(data.event_time || '');
-          setEventGenre(data.event_genre || '');
-          setEventImageURL(data.event_image || '');
-          setUpdateData(data);
-        })
-        .catch(error => {
-          console.error("Error loading event data:", error);
-        });
+      const fetchData = async () => {
+        try {
+          const response = await get_event(id);
+          if(response.ok) {
+            const data = response.data;
+  
+            setEventName(data.event_name || '');
+            setEventLocation(data.event_location || '');
+            setVipTickets(data.tickets?.VIP?.total_tickets || '');
+            setGeneralTickets(data.tickets?.Regular?.total_tickets || '');
+            setVipPrice(data.tickets?.VIP?.original_price || '');
+            setGeneralPrice(data.tickets?.Regular?.original_price || '');
+            setEventDescription(data.event_description || '');
+            setEventDate(data.event_date || '');
+            setEventTime(data.event_time || '');
+            setEventGenre(data.event_genre || '');
+            setEventImageURL(data.event_image || '');
+            setUpdateData(data);
+          }
+        } catch(err) {
+          console.error("Error loading event data: ", err);
+        }
+      };
+      
+      fetchData();
     }
   }, [id, isUpdateMode]);
 
@@ -132,115 +132,27 @@ const CreateEvent = () => {
     }
 
     if (isUpdateMode) {
-      // console.log('Event Updated:', {
-      //   eventName,
-      //   eventLocation,
-      //   vipTickets,
-      //   generalTickets,
-      //   vipPrice,
-      //   generalPrice,
-      //   eventDescription,
-      //   eventDate,
-      //   eventTime,
-      //   eventGenre,
-      //   uploadedUrl,
-      // });
-      await fetch(`${API_BASE_URL}/api/admin/event/${id}`, {
-        method: "PUT",
-        headers: {
-          'Authorization': `Bearer ${Cookies.get("token")}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          event_name: eventName,
-          event_description: eventDescription,
-          event_date: eventDate,
-          event_time: eventTime,
-          event_genre: eventGenre,
-          event_image: uploadedUrl,
-          event_location: eventLocation,
-          tickets: {
-            VIP: {
-              total_tickets: vipTickets,
-              original_price: vipPrice,
-              current_price: updateData.tickets?.VIP?.current_price,
-              available_tickets: vipTickets > updateData.tickets?.VIP?.available_tickets 
-                                  ? updateData.tickets?.VIP?.available_tickets + (vipTickets - updateData.tickets?.VIP?.total_tickets)
-                                  : vipTickets,
-            },
-            Regular: {
-              total_tickets: generalTickets,
-              original_price: generalPrice,
-              current_price: updateData.tickets?.Regular?.current_price,
-              available_tickets: generalTickets > updateData.tickets?.Regular?.available_tickets
-                                  ? updateData.tickets?.Regular?.available_tickets + (generalTickets - updateData.tickets?.Regular?.total_tickets)
-                                  : generalTickets,
-            },
-          },
-        }),
-      })
-      .then(response => {
-        if (response.status === 401) {
+      try {
+        const response = await update_event(id, eventName, eventDescription, eventDate, eventTime, eventGenre, uploadedUrl, eventLocation, vipTickets, vipPrice, updateData.tickets?.VIP?.current_price, updateData.tickets?.VIP?.available_tickets, updateData.tickets?.VIP?.total_tickets, generalTickets, generalPrice, updateData.tickets?.Regular?.current_price, updateData.tickets?.Regular?.available_tickets, updateData.tickets?.Regular?.total_tickets);
+        if(response.status === 401) {
           navigate('/');
-          return Promise.reject('Unauthorized');
         }
-        return response.json();
-      })
-        // .then(data => console.log(data))
-        .catch(err => console.error(err));
-    } else {
-      // console.log('Event Created:', {
-      //   eventName,
-      //   eventLocation,
-      //   vipTickets,
-      //   generalTickets,
-      //   vipPrice,
-      //   generalPrice,
-      //   eventDescription,
-      //   eventDate,
-      //   eventTime,
-      //   eventGenre,
-      //   uploadedUrl,
-      // });
-      await fetch(`${API_BASE_URL}/api/admin/event`, {
-        method: "POST",
-        headers: {
-          'Authorization': `Bearer ${Cookies.get("token")}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          event_name: eventName,
-          event_description: eventDescription,
-          event_date: eventDate,
-          event_time: eventTime,
-          event_genre: eventGenre,
-          event_image: uploadedUrl,
-          event_location: eventLocation,
-          tickets: {
-            VIP: {
-              total_tickets: vipTickets,
-              original_price: vipPrice,
-              current_price: vipPrice,
-              available_tickets: vipTickets,
-            },
-            Regular: {
-              total_tickets: generalTickets,
-              original_price: generalPrice,
-              current_price: generalPrice,
-              available_tickets: generalTickets,
-            },
-          },
-        }),
-      })
-      .then(response => {
-        if (response.status === 401) {
+        const data = response.data;
+      } catch (err) {
+        console.error(err);
+      }
+    } 
+    
+    else {
+      try {
+        const response = await create_event(eventName, eventDescription, eventDate, eventTime, eventGenre, uploadedUrl, eventLocation, vipTickets, vipPrice, generalTickets, generalPrice);
+        if(response.status === 401) {
           navigate('/');
-          return Promise.reject('Unauthorized');
         }
-        return response.json();
-      })
-        // .then(data => console.log(data))
-        .catch(err => console.error(err));
+        const data = response.data;
+      } catch (err) {
+        console.error(err);
+      }
     }
 
     // Display popup message and reset form after 3 seconds.
