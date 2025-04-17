@@ -14,7 +14,7 @@ const MyTickets = () => {
     rawTickets.forEach(ticket => {
       Object.entries(ticket.tickets).forEach(([type, info]) => {
         if (info.available_count > 0) {
-          const qrPayload = `${API_BASE_URL}/validate/${ticket._id}/${ticket.user_id}/${ticket.event_id._id}/${type}/${salt}`;
+          const qrPayload = `${API_BASE_URL}/api/admin/validate/${ticket._id}/${ticket.user_id}/${ticket.event_id._id}/${type}/${salt}`;
           finalList.push({
             eventName: ticket.event_id.event_name,
             location: ticket.event_id.event_location,
