@@ -5,6 +5,8 @@ import { QRCode } from 'qrcode.react';
 import Cookies from 'js-cookie';
 import { API_BASE_URL, AI_BASE_URL } from '../config';
 import { useNavigate } from 'react-router-dom';
+import { get_event, register_event } from '../api/user_events';
+import { get_recommendations } from '../api/ai_events';
 
 
 const EventPage = ({ setTickets }) => {
@@ -29,61 +31,46 @@ const EventPage = ({ setTickets }) => {
 
   const fetchRecommendedEvents = async (recData) => {
     try {
-      // Create an array of fetch promises using the event_id from each recommendation.
       const fetchPromises = recData.map((recItem) => {
-        // Adjust the URL to match your API. For example:
-        return fetch(`${API_BASE_URL}/api/user/events/${recItem.event_id}`,{
-          method: "GET",
-          headers: {
-            'Authorization': `Bearer ${Cookies.get("token")}`,
-            'Content-Type': 'application/json',
-          }})
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(`Network response was not ok for event ${recItem.event_id}`);
-            }
-            return response.json();
-          });
+        return get_event(recItem.event_id)
+        .then((response) => {
+          if(!response.ok) {
+            throw new Error(`Network response was not ok for event ${recItem.event_id}`);
+          }
+          return response.data;
+        });
       });
-      
-      // Wait until all fetch calls complete
+
       const eventsData = await Promise.all(fetchPromises);
-      // console.log('Recommended event details:', eventsData);
-      // Now, for example, you might store these details in your state.
       setRecommendedEvents(eventsData);
     } catch (error) {
       console.error('Error fetching recommended events:', error);
     }
   };
+
+
   const fetchEvent = async () => {
     try {
-      // Adjust the URL to your API endpoint as needed.
-      const response = await fetch(`${API_BASE_URL}/api/user/events/${id}`,{
-        method: "GET",
-        headers: {
-          'Authorization': `Bearer ${Cookies.get("token")}`,
-          'Content-Type': 'application/json',
-        }});
-      if (!response.ok) {
+      const response = await get_event(id);
+
+      if(!response.ok) {
         throw new Error('Network response was not ok');
       }
-      const eventData = await response.json();
-      // console.log(eventData);
+      const eventData = response.data;
       setCurrentEvent(eventData);
     } catch (error) {
       console.error('Error fetching event data:', error);
     }
   };
+
   const fetchRecommendations = async () => {
     try {
-      // Adjust the URL to your API endpoint as needed.
-      const response = await fetch(`${AI_BASE_URL}/api/get_recommendations?eventId=${id}`,{
-        method: "GET"});
+      const response = await get_recommendations(id);
+
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      const eventData = await response.json();
-      // console.log(eventData);
+      const eventData = response.data;
       setRec(eventData);
       fetchRecommendedEvents(eventData);
 
@@ -100,24 +87,12 @@ const EventPage = ({ setTickets }) => {
 
 
   const handleRegister = async () => {
-    await fetch(`${API_BASE_URL}/api/user/event/register`, {
-      method: "POST",
-      headers: {
-        'Authorization': `Bearer ${Cookies.get("token")}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        event_id: id,
-        tickets:{
-          VIP: { count: vipTickets, price: currentEvent.tickets?.VIP?.current_price },
-          Regular: { count: generalTickets, price: currentEvent.tickets?.Regular?.current_price }
-        }
-      }),
-    })
-      .then(response => response.json())
-      // .then(data => console.log(data))
-      .catch(err => console.error(err));
-    console.log("New Ticket Registered");
+    try {
+      const response = await register_event(id, vipTickets, currentEvent.tickets?.VIP?.current_price, generalTickets, currentEvent.tickets?.Regular?.current_price);
+      console.log("New Ticket Registered");
+    } catch(err) {
+      console.error(err);
+    } 
 
     // Show success popup
     setShowPopup(true);

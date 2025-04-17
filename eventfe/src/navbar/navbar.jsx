@@ -17,7 +17,7 @@ const Navbar = () => {
     <div className="navbar">
       <header>
         <nav className="flexSB">
-          <ul class="flexSB">
+          <ul className="flexSB">
             <li className="logo">
               <img
                 src="path-to-your-logo.png"
