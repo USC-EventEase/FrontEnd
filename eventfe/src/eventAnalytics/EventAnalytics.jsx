@@ -1,35 +1,48 @@
 // EventAnalytics.jsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import QrScanner from './QrScanner';
 import './EventAnalytics.css';
 import Cookies from 'js-cookie';
+import { get_all_events } from '../api/admin_events';
 
 
-const events = [
-  {
-    event_id:123,
-    name: 'Concert Night',
-    venue: 'Auditorium',
-    organiser: 'John',
-    time: '8 PM',
-    ticketsSold: 150,
-    crowdPrediction: 'High',
-  },
-  {
-    event_id:345,
-    name: 'Tech Talk',
-    venue: 'Conference Hall',
-    organiser: 'Sarah',
-    time: '2 PM',
-    ticketsSold: 75,
-    crowdPrediction: 'Medium',
-  },
-];
+let events = [];
 
 const EventAnalytics = () => {
   const [activeScanner, setActiveScanner] = useState(null);
   const [validationStatus, setValidationStatus] = useState(null);
   const [scanResult, setScanResult] = useState('');
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await get_all_events();
+
+        if(response.ok) {
+          const data = response.data;
+
+          if(data.length > 0) {
+            const new_events = data.map((item) => {
+              return {
+                event_id: item._id,
+                name: item.event_name,
+                venue: item.event_location,
+                time: item.event_time,
+                ticketsSold: item.tickets.VIP.total_tickets + item.tickets.Regular.total_tickets - item.tickets.VIP.available_tickets - item.tickets.Regular.available_tickets
+              };
+            });
+
+            setEvents(new_events);
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleValidateClick = idx => {
     setActiveScanner(activeScanner === idx ? null : idx);
