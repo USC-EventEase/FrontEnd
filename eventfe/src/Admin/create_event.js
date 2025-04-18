@@ -123,10 +123,8 @@ const CreateEvent = () => {
   // Handle event creation or update after the image upload has completed.
   const handleCreateEvent = async () => {
     // Wait for the image upload to complete and get the image URL.
-    // console.log(eventImage)
     const uploadedUrl = await uploadImage();
     if (!uploadedUrl) {
-      // console.log(uploadedUrl);
       console.error("Image upload failed.");
       return;
     }

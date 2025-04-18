@@ -2,7 +2,7 @@ import { API_BASE_URL } from "../config";
 import Cookies from 'js-cookie';
  
 export const get_event = async (event_id) => {
-    const response = await fetch(`${API_BASE_URL}/api/admi/event/${event_id}`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/event/${event_id}`, {
         method: "GET",
         headers: {
             'Authorization': `Bearer ${Cookies.get("token")}`,
@@ -17,6 +17,24 @@ export const get_event = async (event_id) => {
         ok: response.ok,
         data
     };
+};
+
+export const get_all_events = async () => {
+    const response = await fetch(`${API_BASE_URL}/api/admin/events`, {
+        method: "GET",
+        headers: {
+            'Authorization': `Bearer ${Cookies.get("token")}`,
+            'Content-Type': 'application/json',
+        }
+    })
+
+    const data = await response.json();
+
+    return {
+        status: response.status,
+        ok: response.ok,
+        data
+    }
 };
 
 export const update_event = async (event_id, eventName, eventDescription, eventDate, eventTime, eventGenre, uploadedUrl, eventLocation, vipTickets, vipPrice, vipCurrPrice, vipAvailableTickets, vipTotalTickets, generalTickets, generalPrice, genCurrPrice, genAvailableTickets, genTotalTickets) => {
