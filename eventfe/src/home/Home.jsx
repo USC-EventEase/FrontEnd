@@ -7,18 +7,22 @@ const Home = () => {
       <div className="mission-box">
         <h1>Welcome to EventEase</h1>
         <p>
-          EventEase is your one-stop platform for discovering and attending
-          events you care about. Our mission is to make event participation
-          seamless and enjoyable — whether you're a student, a fan, or an
-          organizer.
+          At Event Ease, our mission is to make event planning effortless.
+          Whether you're booking a venue, organizing an intimate gathering, or
+          hosting a large celebration, we streamline the process—connecting you
+          with the right people, places, and services to bring your vision to
+          life. With simplicity, clarity, and reliability at our core, we're
+          here to turn your moments into milestones—stress-free.
         </p>
       </div>
       <div className="image-box">
-        <img
-          src="/assets/home-background.jpg"
-          alt="EventEase concept"
-          className="background-image"
-        />
+        <div className="logo-wrapper">
+          <img
+            src="/navbar_logo.png"
+            alt="EventEase logo"
+            className="background-image"
+          />
+        </div>
       </div>
     </div>
   );

@@ -2,15 +2,15 @@ import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import "./navbar.css";
 import { FormContextLogin } from "../login/FormContextLogin";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 const Navbar = () => {
   const { formDataLogin } = useContext(FormContextLogin);
 
   function logout() {
-    Cookies.remove('token');
-    Cookies.remove('userId');
-    Cookies.remove('type');
+    Cookies.remove("token");
+    Cookies.remove("userId");
+    Cookies.remove("type");
   }
 
   return (
@@ -20,7 +20,7 @@ const Navbar = () => {
           <ul className="flexSB">
             <li className="logo">
               <img
-                src="path-to-your-logo.png"
+                src="/navbar_logo.png"
                 alt="EventEase Logo"
                 className="navbar-logo"
               />
@@ -35,7 +35,9 @@ const Navbar = () => {
               <Link to="/myTickets">My Tickets</Link>
             </li>
             <li>
-              <Link to="/" onClick={logout}>Log out</Link>
+              <Link to="/" onClick={logout}>
+                Log out
+              </Link>
             </li>
           </ul>
         </nav>
