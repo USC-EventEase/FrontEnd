@@ -2,7 +2,7 @@ import logo from "./logo.svg";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import Navbar from "./navbar/navbar";
+import Navbar from "./navbar/navbar1";
 import Login from "./login/Login";
 import Signup from "./login/Signup";
 import { FormProviderLogin } from "./login/FormContextLogin";
