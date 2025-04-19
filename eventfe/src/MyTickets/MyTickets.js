@@ -17,8 +17,8 @@ const MyTickets = () => {
           const qrPayload = `${API_BASE_URL}/api/admin/validate/${ticket._id}/${ticket.user_id}/${ticket.event_id._id}/${type}/${salt}`;
           finalList.push({
             eventName: ticket.event_id.event_name,
-            location: ticket.event_id.event_location,
             time: ticket.event_id.event_time,
+            location: ticket.event_id.event_location,
             date: ticket.event_id.event_date,
             type: type,
             qrCode: qrPayload,
@@ -101,8 +101,8 @@ const MyTickets = () => {
               <QRCodeCanvas value={sole.qrCode} size={128} />
             </div>
             <h3>{sole.eventName}</h3>
-            <p><strong>Date:</strong> {sole.date}</p>
             <p><strong>Time:</strong> {sole.time}</p>
+            <p><strong>Date:</strong> {sole.date}</p>
             <p><strong>Venue:</strong> {sole.location}</p>
             {sole.type === 'VIP'
               ? <p><strong>VIP Tickets: {sole.count}</strong></p>
