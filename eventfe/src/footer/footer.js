@@ -6,11 +6,6 @@ const Footer = () => {
     <div className="footer">
       <footer className="flexSB">
         <p>&copy; 2025 EventEase. All Rights Reserved.</p>
-        <div className="social-links">
-          {/* <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">Facebook</a>
-          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">Twitter</a>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a> */}
-        </div>
         <df-messenger
         intent="WELCOME"
         chat-title="TickeTron"

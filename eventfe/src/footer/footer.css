@@ -1,6 +1,6 @@
 /* Footer Styling */
 .footer {
-    background-color: black;
+    background-color: #2a008b !important;
     color: white;
     position: fixed;
     bottom: 0;
@@ -8,23 +8,24 @@
     width: 100%;
     height: 50px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding: 0 30px;
     z-index: 1000;
   }
   
   footer {
-    display: flex;
+    /* display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center; */
+    text-align: center;
     width: 100%;
   }
   
   footer p {
     margin: 0;
     font-size: 14px;
-    align-items: center;
+    /* align-items: center; */
   }
   
   footer .social-links a {
