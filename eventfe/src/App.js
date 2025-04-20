@@ -24,15 +24,15 @@ function App() {
       <FormProviderSignup>
         <Router>
               <Routes>
-                  <Route path='/' element={<Login />} />
+                  <Route path='/login' element={<Login />} />
                   <Route path='/signup' element={<Signup />} />
-                  <Route path='/home' element={<><Navbar /><Home /> <Footer/></>} />
+                  <Route path='/' element={<><Navbar /><Home /> <Footer/></>} />
                   <Route path='/events' element={<><Navbar/><Events/><Footer/></>}/>
                   <Route path='/event/:id' element={<><Navbar /><EventPage setTickets={setTickets} /><Footer/></>} />
                   <Route path='/myTickets' element={<><Navbar /><MyTickets tickets={tickets} /><Footer/></>} /> 
-                  <Route path='/create_event' element={<><Admin_Navbar /><Create_Event /> <Footer/></>} />
-                  <Route path='/update_event/:id' element={<><Admin_Navbar /><Create_Event /> <Footer/></>} />
-                  <Route path="/admin/analytics" element={<><Admin_Navbar /><EventAnalytics /> <Footer /></>}/>
+                  <Route path='/create_event' element={<><Navbar /><Create_Event /> <Footer/></>} />
+                  <Route path='/update_event/:id' element={<><Navbar /><Create_Event /> <Footer/></>} />
+                  <Route path="/admin/analytics" element={<><Navbar /><EventAnalytics /> <Footer /></>}/>
               </Routes>
       </Router>
       </FormProviderSignup>

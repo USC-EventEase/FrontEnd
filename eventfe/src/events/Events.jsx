@@ -23,9 +23,30 @@ const Events = () => {
           navigate('/');
         }
 
-        if(response.ok) {
-          eventsData = response.data;
+        if (response.ok) {
+          const now = new Date();
+        
+          eventsData = response.data
+            .map((event) => {
+              const [year, month, day] = event.event_date.split("-");
+              const [hour, minute] = event.event_time.split(":");
+              const localDateTime = new Date(
+                year,
+                month - 1, // 0-indexed months
+                day,
+                hour,
+                minute
+              );
+        
+              return {
+                ...event,
+                eventDateTime: localDateTime,
+              };
+            })
+            .filter((event) => event.eventDateTime >= now) // ✅ only future/now
+            .sort((a, b) => a.eventDateTime - b.eventDateTime); // ✅ earliest first
         }
+        
 
       } catch(err) {
         console.error("Error fetching data: ", err);

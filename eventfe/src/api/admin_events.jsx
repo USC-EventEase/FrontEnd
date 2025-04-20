@@ -141,3 +141,21 @@ export const get_chart_data = async() => {
         data
     };
 };
+
+export const delete_event = async(event_id) => {
+    const response = await fetch(`${API_BASE_URL}/api/admin/event/${event_id}`, {
+        method: "DELETE",
+        headers: {
+            'Authorization': `Bearer ${Cookies.get("token")}`,
+            'Content-Type': 'application/json',
+        },
+    })
+
+    const data = await response.json();
+
+    return {
+        status: response.status,
+        ok: response.ok,
+        data
+    };
+};

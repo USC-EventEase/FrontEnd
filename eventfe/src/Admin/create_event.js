@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 import { API_BASE_URL } from '../config';
 import { useNavigate } from 'react-router-dom';
 import { get_event, update_event, create_event } from '../api/admin_events';
+import { verifyAdmin } from '../api/auth';
 
 
 const CreateEvent = () => {
@@ -27,6 +28,21 @@ const CreateEvent = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [eventImageURL, setEventImageURL] = useState("");
   const [updateData, setUpdateData] = useState(null);
+
+  function logout (){
+    navigate('/');
+  }
+  const checkAdmin = async () => {
+    try {
+      const response = await verifyAdmin();
+      if (!response.ok) {
+        logout();
+      }
+    } catch (err) {
+      console.error("Token verification failed:", err);
+      logout();
+    }
+  };
 
   const handlePredictCrowd = () => {
     // Example API call to fetch predicted crowd from the backend:
@@ -52,6 +68,7 @@ const CreateEvent = () => {
   };
 
   useEffect(() => {
+    checkAdmin();
     if (isUpdateMode) {
       const fetchData = async () => {
         try {
@@ -96,6 +113,14 @@ const CreateEvent = () => {
     setEventImage(null);
     setEventImageURL('');
   };
+  const getLocalDateString = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // months are 0-based
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+  
 
   // Updated uploadImage function that returns the secure URL after uploading the image.
   const uploadImage = async () => {
@@ -123,7 +148,13 @@ const CreateEvent = () => {
   // Handle event creation or update after the image upload has completed.
   const handleCreateEvent = async () => {
     // Wait for the image upload to complete and get the image URL.
-    const uploadedUrl = await uploadImage();
+    let uploadedUrl;
+    if(isUpdateMode && !eventImage){
+      uploadedUrl = eventImageURL;
+    }
+    else{
+      uploadedUrl = await uploadImage();
+    }
     if (!uploadedUrl) {
       console.error("Image upload failed.");
       return;
@@ -157,7 +188,7 @@ const CreateEvent = () => {
     setShowPopup(true);
     setTimeout(() => {
       setShowPopup(false);
-      resetForm();
+      navigate('/admin/analytics');
     }, 3000);
   };
 
@@ -208,7 +239,7 @@ const CreateEvent = () => {
               />
             </div>
             <div className="field">
-              <label>Event Image:</label>
+            {isUpdateMode? <label>Event Image(Skip if not changed): </label>:<label>Event Image: </label>}
               <input
                 type="file"
                 onChange={(e) => {
@@ -225,7 +256,7 @@ const CreateEvent = () => {
           </div>
           <div className="form-right">
             <div className="field">
-              <label>Event Time:</label>
+              <label>Event Time (Local Time):</label>
               <input
                 type="time"
                 value={eventTime}
@@ -246,6 +277,7 @@ const CreateEvent = () => {
                 type="date"
                 value={eventDate}
                 onChange={(e) => setEventDate(e.target.value)}
+                min={getLocalDateString()}
               />
             </div>
             <div className="field">

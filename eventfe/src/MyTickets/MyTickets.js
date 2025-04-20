@@ -13,7 +13,7 @@ const MyTickets = () => {
 
     rawTickets.forEach(ticket => {
       Object.entries(ticket.tickets).forEach(([type, info]) => {
-        if (info.available_count > 0) {
+        if (info.available_count > 0 && ticket.event_id) {
           const qrPayload = `${API_BASE_URL}/api/admin/validate/${ticket._id}/${ticket.user_id}/${ticket.event_id._id}/${type}/${salt}`;
           finalList.push({
             eventName: ticket.event_id.event_name,
@@ -30,6 +30,7 @@ const MyTickets = () => {
 
     return finalList;
   };
+  
 
   useEffect(() => {
     let pollIntervalId;
@@ -93,21 +94,30 @@ const MyTickets = () => {
       <section className="my-tickets-header">
         <h1>My Tickets</h1>
       </section>
-
+      
       <section className="tickets-list">
-        {ticket?.map((sole, index) => (
-          <div key={index} className="ticket-card">
-            <div className="qr-code">
-              <QRCodeCanvas value={sole.qrCode} size={128} />
-            </div>
-            <h3>{sole.eventName}</h3>
-            <p><strong>Time:</strong> {sole.time}</p>
-            <p><strong>Date:</strong> {sole.date}</p>
-            <p><strong>Venue:</strong> {sole.location}</p>
-            {sole.type === 'VIP'
-              ? <p><strong>VIP Tickets: {sole.count}</strong></p>
-              : <p><strong>General Tickets: {sole.count}</strong></p>}
+        {ticket === null && <p className="loading">Loading tickets…</p>}
+        {ticket?.length === 0 && (
+          <div className="no-tickets">
+            <p>You haven’t purchased any tickets yet.</p>
+            {/* optional CTA */}
+            {/* <Link to="/events" className="btn">Browse events</Link> */}
           </div>
+        )}
+        {ticket?.length > 0 &&
+          ticket.map((t, idx) => (
+            <div key={idx} className="ticket-card">
+              <div className="qr-code">
+                <QRCodeCanvas value={t.qrCode} size={128} />
+              </div>
+              <h3>{t.eventName}</h3>
+              <p><strong>Time:</strong>  {t.time}</p>
+              <p><strong>Date:</strong>  {t.date}</p>
+              <p><strong>Venue:</strong> {t.location}</p>
+              <p>
+                <strong>{t.type === 'VIP' ? 'VIP Tickets' : 'General Tickets'}:</strong> {t.count}
+              </p>
+            </div>
         ))}
       </section>
     </div>

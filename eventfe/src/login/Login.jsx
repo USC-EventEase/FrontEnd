@@ -48,21 +48,13 @@ const Login = () => {
 				Cookies.set('userId', userId);
 				Cookies.set('type', type);
 
-				if(type === 'user') {
-					navigate('/home');
-				}
-
-				else {
-					navigate('/create_event')
-				}
+				navigate('/');
 			}
 
 			else {
 				const errorMessage = response.data.message;
 				setErrorText(errorMessage);
 				setShowError(true);
-
-				// console.log(data.message);
 			}
 			
 		} catch (err) {
@@ -91,7 +83,7 @@ const Login = () => {
 					</div>
 					<div>
 						<label htmlFor="password">Password</label>
-						<input type="text" id="password" name="password" value={formDataLogin.password} placeholder="Enter your password" onChange={handleChange} />
+						<input type="password" id="password" name="password" value={formDataLogin.password} placeholder="Enter your password" onChange={handleChange} />
 					</div>
 					<button type="submit" onClick={handleSubmit}>
 						Submit
