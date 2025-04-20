@@ -3,16 +3,32 @@ import React, { useEffect, useState } from 'react';
 import QrScanner from './QrScanner';
 import './EventAnalytics.css';
 import Cookies from 'js-cookie';
-import { get_all_events } from '../api/admin_events';
+import { get_all_events, get_chart_data } from '../api/admin_events';
+import { PieChart, Pie, Tooltip, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer } from 'recharts';
 
-
-let events = [];
+// let events = [];
 
 const EventAnalytics = () => {
   const [activeScanner, setActiveScanner] = useState(null);
   const [validationStatus, setValidationStatus] = useState(null);
   const [scanResult, setScanResult] = useState('');
   const [events, setEvents] = useState([]);
+
+  const [pieChartData, setPieChartData] = useState([]);
+  const [lineChartData, setLineChartData] = useState([]);
+
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const COLORS = [
+    '#0088FE', '#00C49F', '#FFBB28', '#FF8042',  
+    '#FF6347', '#90EE90', '#6495ED', '#FFD700', 
+    '#FF4500', '#32CD32', '#8A2BE2', '#FF1493', 
+    '#00BFFF', '#20B2AA', '#FFD700', '#FF69B4'  
+  ];
+
+  const onPieEnter = (_, index) => {
+    setActiveIndex(index);
+  };
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,7 +57,23 @@ const EventAnalytics = () => {
       }
     };
 
+    const fetchDataCharts = async () => {
+      try {
+        const response = await get_chart_data();
+
+        if(response.ok) {
+          const data = response.data;
+          setPieChartData(data["pieChart"]);
+          setLineChartData(data["lineChart"]);
+        }
+      } catch(err) {
+        console.error(err);
+      }
+    }
+
     fetchData();
+    fetchDataCharts();
+
   }, []);
 
   const handleValidateClick = idx => {
@@ -55,13 +87,6 @@ const EventAnalytics = () => {
   };
 
   const verifyTicket = async (idx)=>{
-    // const parts = scanResult.split('/');
-    // const event_id = parts[parts.length - 3];
-    // if(idx!=event_id){
-    //   console.log(event_id)
-    //   setValidationStatus('invalid');
-    // }
-    // else{
       try {
         const response = await fetch(scanResult, {
           method: 'PUT',
@@ -84,7 +109,6 @@ const EventAnalytics = () => {
         
         setValidationStatus('invalid');
       }
-    // }
   }
   
 
@@ -150,6 +174,48 @@ const EventAnalytics = () => {
             )}
           </div>
         ))}
+      </div>
+      <div className="charts">
+        <div className="pie-chart-container">
+          <PieChart width={700} height={700}>
+            <Pie activeIndex={activeIndex} data={pieChartData} dataKey="totalTicketsSold" outerRadius={250} fill="green" onMouseEnter={onPieEnter} style={{ cursor: 'pointer', outline: 'none' }} >
+              {pieChartData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index%COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip 
+              content={({ payload }) => {
+                if (payload && payload.length > 0) {
+                  const { eventName, totalTicketsSold } = payload[0].payload;
+                  return (
+                    <div className="custom-tooltip">
+                      <h3>{eventName}</h3>
+                      <p>Tickets Sold: {totalTicketsSold}</p>
+                    </div>
+                  );
+                }
+                return null;
+              }}
+            />
+          </PieChart>
+        </div>
+
+        <div className="line-chart-container" >
+          <ResponsiveContainer width="100%" aspect={3}>
+              <LineChart data={lineChartData} >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" interval={"preserveStartEnd"}/>
+                <YAxis />
+                <Tooltip />
+                <Legend layout="vertical" 
+                  verticalAlign="middle" 
+                  align="right" 
+                  wrapperStyle={{ top: 150, left: -120 }}/>
+                <Line type="monotone" dataKey="revenue" stroke="#8884d8" activeDot={{ r: 8 }} />
+              </LineChart>
+          </ResponsiveContainer>
+        </div>
+        <br></br><br></br>
       </div>
     </div>
   );
