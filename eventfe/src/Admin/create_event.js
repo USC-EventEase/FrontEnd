@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './create_event.css';
 import { useParams } from 'react-router-dom';
-import Cookies from 'js-cookie';
-import { API_BASE_URL } from '../config';
 import { useNavigate } from 'react-router-dom';
-import { get_event, update_event, create_event } from '../api/admin_events';
+import { get_event, update_event, create_event, crowd_prediction } from '../api/admin_events';
 import { verifyAdmin } from '../api/auth';
 
 
@@ -19,7 +17,7 @@ const CreateEvent = () => {
   const [generalTickets, setGeneralTickets] = useState('');
   const [vipPrice, setVipPrice] = useState('');
   const [generalPrice, setGeneralPrice] = useState('');
-  const [predictedCrowd, setPredictedCrowd] = useState('');
+  const [predictedCrowd, setPredictedCrowd] = useState(0);
   const [eventDescription, setEventDescription] = useState('');
   const [eventDate, setEventDate] = useState('');
   const [eventTime, setEventTime] = useState('');
@@ -44,27 +42,17 @@ const CreateEvent = () => {
     }
   };
 
-  const handlePredictCrowd = () => {
-    // Example API call to fetch predicted crowd from the backend:
-    fetch('/api/predict-crowd', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        vipTickets,
-        generalTickets,
-        vipPrice,
-        generalPrice,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setPredictedCrowd(data.predictedCrowd); // Assuming the backend returns 'predictedCrowd'
-      })
-      .catch((error) => {
-        console.error('Error predicting crowd:', error);
-      });
+  const handlePredictCrowd = async() => {
+    const totalTickets = Number(vipTickets) + Number(generalTickets);
+    const averagePrice = totalTickets > 0
+      ? (Number(vipPrice) * Number(vipTickets) + Number(generalPrice) * Number(generalTickets)) / totalTickets
+      : 0;
+
+    console.log(eventGenre, eventDate, totalTickets, averagePrice, eventLocation);
+    const response = await crowd_prediction(eventGenre, eventDate, totalTickets, averagePrice, eventLocation);
+    if(response.ok){
+      setPredictedCrowd(response.data.eventId)
+    }
   };
 
   useEffect(() => {
