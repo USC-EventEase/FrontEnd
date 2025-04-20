@@ -136,6 +136,11 @@ const CreateEvent = () => {
   // Handle event creation or update after the image upload has completed.
   const handleCreateEvent = async () => {
     // Wait for the image upload to complete and get the image URL.
+    if (!eventName || !eventLocation || !eventDescription || !eventDate || !eventTime || !eventGenre || !vipTickets || !vipPrice || !generalTickets || !generalPrice || (!eventImage && !isUpdateMode)) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+    
     let uploadedUrl;
     if(isUpdateMode && !eventImage){
       uploadedUrl = eventImageURL;

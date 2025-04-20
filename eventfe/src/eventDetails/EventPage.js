@@ -57,6 +57,10 @@ const EventPage = ({ setTickets }) => {
   }, [id]);
 
   const handleRegister = async () => {
+    if (Number(vipTickets) <= 0 && Number(generalTickets) <= 0) {
+      alert("Please select at least one ticket.");
+      return;
+    }
     try {
       await register_event(
         id,

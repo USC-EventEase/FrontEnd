@@ -22,3 +22,5 @@ yarn-error.log
 # Build artifacts
 build
 dist
+
+package-lock.json

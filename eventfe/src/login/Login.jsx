@@ -76,16 +76,16 @@ const Login = () => {
 					</p>
 				)}
 
-				<form>
+				<form onSubmit={handleSubmit}>
 					<div>
 						<label htmlFor="username">Email</label>
-						<input type="text" id="name" name="email" value={formDataLogin.email} placeholder="Enter your email" onChange={handleChange} />
+						<input type="text" id="name" name="email" value={formDataLogin.email} placeholder="Enter your email" onChange={handleChange} required />
 					</div>
 					<div>
 						<label htmlFor="password">Password</label>
-						<input type="password" id="password" name="password" value={formDataLogin.password} placeholder="Enter your password" onChange={handleChange} />
+						<input type="password" id="password" name="password" value={formDataLogin.password} placeholder="Enter your password" onChange={handleChange} required/>
 					</div>
-					<button type="submit" onClick={handleSubmit}>
+					<button type="submit">
 						Submit
 					</button>
 				</form>
