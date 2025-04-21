@@ -97,6 +97,34 @@ export default function EventAnalytics() {
       logout();
     }
   };
+  const handleDelete = async (eventId) => {
+    const confirmed = window.confirm("Are you sure you want to delete this event?");
+    if (!confirmed) return;
+  
+    try {
+      const response = await delete_event(eventId);
+      if (response.ok) {
+        // Remove event from local state
+        setEvents((prev) => prev.filter((e) => e.event_id !== eventId));
+  
+        // Optionally refresh chart data
+        const updatedChartData = await get_chart_data();
+        if (updatedChartData.ok) {
+          const filteredPie = updatedChartData.data.pieChart.filter(
+            (entry) => entry.totalTicketsSold > 0
+          );
+          setPieChartData(filteredPie);
+          setLineChartData(updatedChartData.data.lineChart);
+        }
+      } else {
+        alert("Failed to delete the event. Please try again.");
+      }
+    } catch (err) {
+      console.error("Delete failed:", err);
+      alert("Something went wrong.");
+    }
+  };
+  
   useEffect(() => {
     checkAdmin();
     const get_data_all = (async () => {
@@ -313,7 +341,7 @@ export default function EventAnalytics() {
               </button>
               <button
                 className="ea-btn delete"
-                onClick={() => delete_event(e.event_id)}
+                onClick={() => handleDelete(e.event_id)}
               >
                 Delete
               </button>
