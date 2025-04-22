@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "../config";
+import { API_BASE_URL, AI_BASE_URL } from "../config";
 import Cookies from 'js-cookie';
  
 export const get_event = async (event_id) => {
@@ -132,6 +132,51 @@ export const get_chart_data = async() => {
             'Content-Type': 'application/json',
         },
     })
+
+    const data = await response.json();
+
+    return {
+        status: response.status,
+        ok: response.ok,
+        data
+    };
+};
+
+export const delete_event = async(event_id) => {
+    const response = await fetch(`${API_BASE_URL}/api/admin/event/${event_id}`, {
+        method: "DELETE",
+        headers: {
+            'Authorization': `Bearer ${Cookies.get("token")}`,
+            'Content-Type': 'application/json',
+        },
+    })
+
+    const data = await response.json();
+
+    return {
+        status: response.status,
+        ok: response.ok,
+        data
+    };
+};
+
+export const crowd_prediction = async(genre, date, capacity, price, location) => {
+    const response = await fetch(`${AI_BASE_URL}/api/get_crowd_predictions`, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          eventDetails: {
+            type: genre,
+            date: date,
+            capacity: capacity,
+            ticket_price: price,
+            location: location
+          }
+        })
+      });
+      
 
     const data = await response.json();
 

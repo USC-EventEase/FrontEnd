@@ -70,28 +70,28 @@ const Signup = () => {
 					</p>
 				)}
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <div>
             <label htmlFor="name">Name</label>
-            <input type="text" id="name" name="name" value={formDataSignup.name} placeholder="Enter your name" onChange={handleChange}/>
+            <input type="text" id="name" name="name" value={formDataSignup.name} placeholder="Enter your name" onChange={handleChange} required/>
           </div>
           <div>
             <label htmlFor="email">Email</label>
-            <input type="text" id="email" name="email" value={formDataSignup.email} placeholder="Enter your email" onChange={handleChange}/>
+            <input type="text" id="email" name="email" value={formDataSignup.email} placeholder="Enter your email" onChange={handleChange} required/>
           </div>
           <div>
             <label htmlFor="password">Password</label>
-            <input type="password" id="password" name="password" value={formDataSignup.password} placeholder="Enter your password" onChange={handleChange}/>
+            <input type="password" id="password" name="password" value={formDataSignup.password} placeholder="Enter your password" onChange={handleChange} required/>
           </div>
           <div>
             <label htmlFor="type">Account Type</label>
-            <select id="type" name="type" value={formDataSignup.type} onChange={handleChange}>
+            <select id="type" name="type" value={formDataSignup.type} onChange={handleChange} required>
               <option value="">Select an option</option>
               <option value="user">User</option>
               <option value="admin">Admin</option>
             </select>
           </div>
-          <button type="submit" onClick={handleSubmit}>
+          <button type="submit">
             Submit
           </button>
           <h2 align="center" className="or">

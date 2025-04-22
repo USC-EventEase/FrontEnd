@@ -12,11 +12,11 @@ body {
   display: flex;
   flex-wrap: wrap; /* allows items to wrap to the next line if needed */
   gap: 1.5rem; /* space between boxes */
-  justify-content: start; /* left-align the cards */
+  justify-content: center; /* left-align the cards */
 }
 
 .event-card {
-  width: 300px;
+  width: 400px;
   border: 1px solid #ddd;
   border-radius: 10px;
   padding: 1rem;
@@ -67,4 +67,16 @@ body {
   font-size: 1rem;
   border: 2px solid #ccc;
   border-radius: 6px;
+}
+
+.event-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0.8rem 0 0.4rem;
+  min-height: 48px; /* ✅ to maintain equal height across cards */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* ✅ limit to 2 lines */
+  -webkit-box-orient: vertical;
 }
