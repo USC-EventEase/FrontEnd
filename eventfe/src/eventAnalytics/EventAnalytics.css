@@ -15,12 +15,14 @@
 }
 
 .ea-cards {
-  display: flex;
+  display: grid;
   gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   justify-content: center;
   flex-wrap: nowrap;
   overflow-x: auto;
-  align-items: flex-start;
+  /* align-items: flex-start; */
+  justify-items: stretch;  
 }
 
 .ea-card {
@@ -78,6 +80,11 @@
   color: #fff;
 }
 
+.ea-btn.update {
+  background: orange;
+  color: #fff;
+}
+
 .ea-btn.validate {
   background: #009688;
   color: #fff;
@@ -113,14 +120,22 @@
   font-weight: bold;
 }
 
-.pie-chart-container {
+/* --- general container tweaks --- */
+.charts {
   display: flex;
-  justify-content: center;  
-  align-items: center;       
+  flex-direction: column;
+  gap: 3rem;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
 }
 
-.line-chart-container {
-  display: flex;
-  justify-content: center;   
-  align-items: center;       
+.chart-section {
+  width: 100%;
+}
+
+.chart-header {
+  text-align: center;
+  font-size: 1.4rem;
+  margin-bottom: 0.6rem;
+  font-weight: 600;
 }

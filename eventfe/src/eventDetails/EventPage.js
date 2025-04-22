@@ -26,7 +26,7 @@ const EventPage = ({ setTickets }) => {
         get_event(recItem.event_id).then(res => res.data)
       );
       const eventsData = await Promise.all(fetchPromises);
-      setRecommendedEvents(eventsData);
+      setRecommendedEvents(eventsData)
     } catch (err) {
       console.error('Error fetching recommended events:', err);
     }
@@ -45,6 +45,7 @@ const EventPage = ({ setTickets }) => {
     try {
       const response = await get_recommendations(id);
       await fetchRecommendedEvents(response.data);
+
     } catch (err) {
       console.error('Error fetching recommendations:', err);
     }
@@ -56,6 +57,10 @@ const EventPage = ({ setTickets }) => {
   }, [id]);
 
   const handleRegister = async () => {
+    if (Number(vipTickets) <= 0 && Number(generalTickets) <= 0) {
+      alert("Please select at least one ticket.");
+      return;
+    }
     try {
       await register_event(
         id,
@@ -137,7 +142,7 @@ const EventPage = ({ setTickets }) => {
         </div>
       )}
 
-      {recommendedEvents.length > 0 && (
+      {recommendedEvents.length>0?
         <section className="similar-events">
           <h3>Similar Events</h3>
           <div className="similar-events-list">
@@ -152,7 +157,8 @@ const EventPage = ({ setTickets }) => {
             ))}
           </div>
         </section>
-      )}
+        :<></>
+      }
     </div>
   );
 };
