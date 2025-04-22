@@ -13,7 +13,7 @@ const Navbar = () => {
           <ul class="flexSB">
             <li className="logo">
               <img
-                src="path-to-your-logo.png"
+                src="/navbar_logo.png"
                 alt="EventEase Logo"
                 className="navbar-logo"
               />

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './create_event.css';
 import { useParams } from 'react-router-dom';
-import Cookies from 'js-cookie';
-import { API_BASE_URL } from '../config';
 import { useNavigate } from 'react-router-dom';
+import { get_event, update_event, create_event, crowd_prediction } from '../api/admin_events';
+import { verifyAdmin } from '../api/auth';
 
 
 const CreateEvent = () => {
@@ -17,7 +17,7 @@ const CreateEvent = () => {
   const [generalTickets, setGeneralTickets] = useState('');
   const [vipPrice, setVipPrice] = useState('');
   const [generalPrice, setGeneralPrice] = useState('');
-  const [predictedCrowd, setPredictedCrowd] = useState('');
+  const [predictedCrowd, setPredictedCrowd] = useState(0);
   const [eventDescription, setEventDescription] = useState('');
   const [eventDate, setEventDate] = useState('');
   const [eventTime, setEventTime] = useState('');
@@ -27,57 +27,62 @@ const CreateEvent = () => {
   const [eventImageURL, setEventImageURL] = useState("");
   const [updateData, setUpdateData] = useState(null);
 
-  const handlePredictCrowd = () => {
-    // Example API call to fetch predicted crowd from the backend:
-    fetch('/api/predict-crowd', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        vipTickets,
-        generalTickets,
-        vipPrice,
-        generalPrice,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setPredictedCrowd(data.predictedCrowd); // Assuming the backend returns 'predictedCrowd'
-      })
-      .catch((error) => {
-        console.error('Error predicting crowd:', error);
-      });
+  function logout (){
+    navigate('/');
+  }
+  const checkAdmin = async () => {
+    try {
+      const response = await verifyAdmin();
+      if (!response.ok) {
+        logout();
+      }
+    } catch (err) {
+      console.error("Token verification failed:", err);
+      logout();
+    }
+  };
+
+  const handlePredictCrowd = async() => {
+    const totalTickets = Number(vipTickets) + Number(generalTickets);
+    const averagePrice = totalTickets > 0
+      ? (Number(vipPrice) * Number(vipTickets) + Number(generalPrice) * Number(generalTickets)) / totalTickets
+      : 0;
+
+    console.log(eventGenre, eventDate, totalTickets, averagePrice, eventLocation);
+    const response = await crowd_prediction(eventGenre, eventDate, totalTickets, averagePrice, eventLocation);
+    if(response.ok){
+      setPredictedCrowd(response.data.eventId)
+    }
   };
 
   useEffect(() => {
+    checkAdmin();
     if (isUpdateMode) {
-      // Retrieve event data when updating an event
-      fetch(`${API_BASE_URL}/api/admin/event/${id}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${Cookies.get("token")}`,
-          'Content-Type': 'application/json',
-        },
-      })
-        .then(response => response.json())
-        .then(data => {
-          setEventName(data.event_name || '');
-          setEventLocation(data.event_location || '');
-          setVipTickets(data.tickets?.VIP?.total_tickets || '');
-          setGeneralTickets(data.tickets?.Regular?.total_tickets || '');
-          setVipPrice(data.tickets?.VIP?.original_price || '');
-          setGeneralPrice(data.tickets?.Regular?.original_price || '');
-          setEventDescription(data.event_description || '');
-          setEventDate(data.event_date || '');
-          setEventTime(data.event_time || '');
-          setEventGenre(data.event_genre || '');
-          setEventImageURL(data.event_image || '');
-          setUpdateData(data);
-        })
-        .catch(error => {
-          console.error("Error loading event data:", error);
-        });
+      const fetchData = async () => {
+        try {
+          const response = await get_event(id);
+          if(response.ok) {
+            const data = response.data;
+  
+            setEventName(data.event_name || '');
+            setEventLocation(data.event_location || '');
+            setVipTickets(data.tickets?.VIP?.total_tickets || '');
+            setGeneralTickets(data.tickets?.Regular?.total_tickets || '');
+            setVipPrice(data.tickets?.VIP?.original_price || '');
+            setGeneralPrice(data.tickets?.Regular?.original_price || '');
+            setEventDescription(data.event_description || '');
+            setEventDate(data.event_date || '');
+            setEventTime(data.event_time || '');
+            setEventGenre(data.event_genre || '');
+            setEventImageURL(data.event_image || '');
+            setUpdateData(data);
+          }
+        } catch(err) {
+          console.error("Error loading event data: ", err);
+        }
+      };
+      
+      fetchData();
     }
   }, [id, isUpdateMode]);
 
@@ -96,6 +101,14 @@ const CreateEvent = () => {
     setEventImage(null);
     setEventImageURL('');
   };
+  const getLocalDateString = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // months are 0-based
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+  
 
   // Updated uploadImage function that returns the secure URL after uploading the image.
   const uploadImage = async () => {
@@ -123,131 +136,52 @@ const CreateEvent = () => {
   // Handle event creation or update after the image upload has completed.
   const handleCreateEvent = async () => {
     // Wait for the image upload to complete and get the image URL.
-    // console.log(eventImage)
-    const uploadedUrl = await uploadImage();
+    if (!eventName || !eventLocation || !eventDescription || !eventDate || !eventTime || !eventGenre || !vipTickets || !vipPrice || !generalTickets || !generalPrice || (!eventImage && !isUpdateMode)) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+    
+    let uploadedUrl;
+    if(isUpdateMode && !eventImage){
+      uploadedUrl = eventImageURL;
+    }
+    else{
+      uploadedUrl = await uploadImage();
+    }
     if (!uploadedUrl) {
-      // console.log(uploadedUrl);
       console.error("Image upload failed.");
       return;
     }
 
     if (isUpdateMode) {
-      // console.log('Event Updated:', {
-      //   eventName,
-      //   eventLocation,
-      //   vipTickets,
-      //   generalTickets,
-      //   vipPrice,
-      //   generalPrice,
-      //   eventDescription,
-      //   eventDate,
-      //   eventTime,
-      //   eventGenre,
-      //   uploadedUrl,
-      // });
-      await fetch(`${API_BASE_URL}/api/admin/event/${id}`, {
-        method: "PUT",
-        headers: {
-          'Authorization': `Bearer ${Cookies.get("token")}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          event_name: eventName,
-          event_description: eventDescription,
-          event_date: eventDate,
-          event_time: eventTime,
-          event_genre: eventGenre,
-          event_image: uploadedUrl,
-          event_location: eventLocation,
-          tickets: {
-            VIP: {
-              total_tickets: vipTickets,
-              original_price: vipPrice,
-              current_price: updateData.tickets?.VIP?.current_price,
-              available_tickets: vipTickets > updateData.tickets?.VIP?.available_tickets 
-                                  ? updateData.tickets?.VIP?.available_tickets + (vipTickets - updateData.tickets?.VIP?.total_tickets)
-                                  : vipTickets,
-            },
-            Regular: {
-              total_tickets: generalTickets,
-              original_price: generalPrice,
-              current_price: updateData.tickets?.Regular?.current_price,
-              available_tickets: generalTickets > updateData.tickets?.Regular?.available_tickets
-                                  ? updateData.tickets?.Regular?.available_tickets + (generalTickets - updateData.tickets?.Regular?.total_tickets)
-                                  : generalTickets,
-            },
-          },
-        }),
-      })
-      .then(response => {
-        if (response.status === 401) {
+      try {
+        const response = await update_event(id, eventName, eventDescription, eventDate, eventTime, eventGenre, uploadedUrl, eventLocation, vipTickets, vipPrice, updateData.tickets?.VIP?.current_price, updateData.tickets?.VIP?.available_tickets, updateData.tickets?.VIP?.total_tickets, generalTickets, generalPrice, updateData.tickets?.Regular?.current_price, updateData.tickets?.Regular?.available_tickets, updateData.tickets?.Regular?.total_tickets);
+        if(response.status === 401) {
           navigate('/');
-          return Promise.reject('Unauthorized');
         }
-        return response.json();
-      })
-        // .then(data => console.log(data))
-        .catch(err => console.error(err));
-    } else {
-      // console.log('Event Created:', {
-      //   eventName,
-      //   eventLocation,
-      //   vipTickets,
-      //   generalTickets,
-      //   vipPrice,
-      //   generalPrice,
-      //   eventDescription,
-      //   eventDate,
-      //   eventTime,
-      //   eventGenre,
-      //   uploadedUrl,
-      // });
-      await fetch(`${API_BASE_URL}/api/admin/event`, {
-        method: "POST",
-        headers: {
-          'Authorization': `Bearer ${Cookies.get("token")}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          event_name: eventName,
-          event_description: eventDescription,
-          event_date: eventDate,
-          event_time: eventTime,
-          event_genre: eventGenre,
-          event_image: uploadedUrl,
-          event_location: eventLocation,
-          tickets: {
-            VIP: {
-              total_tickets: vipTickets,
-              original_price: vipPrice,
-              current_price: vipPrice,
-              available_tickets: vipTickets,
-            },
-            Regular: {
-              total_tickets: generalTickets,
-              original_price: generalPrice,
-              current_price: generalPrice,
-              available_tickets: generalTickets,
-            },
-          },
-        }),
-      })
-      .then(response => {
-        if (response.status === 401) {
+        const data = response.data;
+      } catch (err) {
+        console.error(err);
+      }
+    } 
+    
+    else {
+      try {
+        const response = await create_event(eventName, eventDescription, eventDate, eventTime, eventGenre, uploadedUrl, eventLocation, vipTickets, vipPrice, generalTickets, generalPrice);
+        if(response.status === 401) {
           navigate('/');
-          return Promise.reject('Unauthorized');
         }
-        return response.json();
-      })
-        // .then(data => console.log(data))
-        .catch(err => console.error(err));
+        const data = response.data;
+      } catch (err) {
+        console.error(err);
+      }
     }
 
     // Display popup message and reset form after 3 seconds.
     setShowPopup(true);
     setTimeout(() => {
       setShowPopup(false);
-      resetForm();
+      navigate('/admin/analytics');
     }, 3000);
   };
 
@@ -298,7 +232,7 @@ const CreateEvent = () => {
               />
             </div>
             <div className="field">
-              <label>Event Image:</label>
+            {isUpdateMode? <label>Event Image(Skip if not changed): </label>:<label>Event Image: </label>}
               <input
                 type="file"
                 onChange={(e) => {
@@ -315,7 +249,7 @@ const CreateEvent = () => {
           </div>
           <div className="form-right">
             <div className="field">
-              <label>Event Time:</label>
+              <label>Event Time (Local Time):</label>
               <input
                 type="time"
                 value={eventTime}
@@ -336,6 +270,7 @@ const CreateEvent = () => {
                 type="date"
                 value={eventDate}
                 onChange={(e) => setEventDate(e.target.value)}
+                min={getLocalDateString()}
               />
             </div>
             <div className="field">

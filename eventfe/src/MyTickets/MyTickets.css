@@ -1,5 +1,6 @@
 /* General Page Styling */
 .my-tickets-page {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   text-align: center;
   padding-bottom: 50px;
   padding-top: 0px;
@@ -7,30 +8,23 @@
 
 /* Header Styling */
 .my-tickets-header {
-  background-color: #333;
-  color: white;
+  color: black;
   margin-top: 60px;
   height: 40px;
   padding-top: 10px;
 }
 
 .my-tickets-header h1 {
-  font-size: 20px;
+  font-size: 30px;
 }
 
-/* Background Image Styling */
-.my-tickets-background img {
-  width: 100%;
-  height: 300px;
-  object-fit: cover;
-  margin-top: 20px;
-}
 
 /* Ticket Cards Layout */
 .tickets-list {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   flex-wrap: wrap;
+  gap: 20px;
   margin-top: 20px;
 }
 
@@ -40,18 +34,33 @@
   margin: 10px;
   border: 1px solid #ccc;
   background-color: #f9f9f9;
+  border-radius: 5px;
+}
+
+.ticket-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
 }
 
 .ticket-card h3 {
-  font-size: 18px;
+  font-size: 16px;
+  margin-bottom: 5px;
+  color: #333;
 }
 
 .ticket-card p {
-  font-size: 16px;
+  font-size: 14px;
+  color: #444;
+  margin: 3px 0;
+}
+
+.ticket-card strong {
+  font-weight: 600;
+  color: #000;
 }
 
 .qr-code {
-  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .ticket-card img {
